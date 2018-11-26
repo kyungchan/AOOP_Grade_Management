@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -44,6 +45,7 @@ public class AttandTablePanel extends JPanel {
 			scoreTable.getColumn(columnNames[i]).setCellRenderer(celAlignCenter);
 		}
 
+		scrollPane.setPreferredSize(new Dimension(900, 500));
 		scoreTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scoreTable.setCellSelectionEnabled(true);
 		setLayout(new GridLayout(1, 0));

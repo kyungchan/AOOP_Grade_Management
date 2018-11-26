@@ -8,8 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class MainTablePanel extends JPanel {
+	DefaultTableModel model;
+	
 	public MainTablePanel() {
 		String[] columnNames = {"학번", "학년", "학생이름", "출결(10%)", "중간(15%)", 
 								"기말(15%)", "과제(20%)", "퀴즈(10%)", "발표(10%)", 
@@ -48,7 +51,8 @@ public class MainTablePanel extends JPanel {
 	            {"60142167", "2", "전소미", "30","44","10","70","53","66","70","100"},
 	            {"60172030", "2", "장민해", "80","86","77","88","96","66","80","100"}
 		};
-		JTable scoreTable = new JTable(data, columnNames);
+		model = new DefaultTableModel(data, columnNames);
+		JTable scoreTable = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(scoreTable);
 		scrollPane.setPreferredSize(new Dimension(1000, 500));
 		scoreTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
