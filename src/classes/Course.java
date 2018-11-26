@@ -10,6 +10,18 @@ public class Course extends Student {
 	private int scoreReport;
 	private int scoreEtc;
 
+	public Course(int scoreAttand, int scoreMid, int scoreFinal, int scoreHomework, int scoreQuiz, int scorePPT,
+			int scoreReport, int scoreEtc) {
+		this.scoreAttand = scoreAttand;
+		this.scoreMid = scoreMid;
+		this.scoreFinal = scoreFinal;
+		this.scoreHomework = scoreHomework;
+		this.scoreQuiz = scoreQuiz;
+		this.scorePPT = scorePPT;
+		this.scoreReport = scoreReport;
+		this.scoreEtc = scoreEtc;
+	}
+
 	public int getScoreAttand() {
 		return scoreAttand;
 	}
@@ -75,8 +87,10 @@ public class Course extends Student {
 	}
 
 	@Override
-	int totalScore() {
-		return 0;
+	int totalScore(Ratio ratio) {
+		return ratio.getRatioAttand() * this.scoreAttand + ratio.getRatioMid() * this.scoreMid + ratio.getRatioFinal() * this.scoreFinal
+				+ ratio.getRatioHomework() * this.scoreHomework + ratio.getRatioQuiz() * this.scoreQuiz + ratio.getRatioPPT() * this.scorePPT
+				+ ratio.getRatioReport() * this.scoreReport + ratio.getRatioEtc() * this.scoreEtc;
 	}
 
 }
