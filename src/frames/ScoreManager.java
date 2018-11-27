@@ -90,6 +90,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		case "등급산출":
 			break;
 		case "그래프작성":
+			new GraphTablePanel();
 			break;
 		case "설정":
 			break;
