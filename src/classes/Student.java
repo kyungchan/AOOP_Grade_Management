@@ -3,10 +3,19 @@ package classes;
 abstract class Student {
 	protected String name;
 	protected String stuNumber;
-	protected String stuGrade;
+	protected int stuGrade;
 
 	abstract int totalScore(Ratio ratio);
 
+	public Student() {
+	}
+	
+	public Student(String name, String stuNumber, int stuGrade) {
+		setName(name);
+		setStuNumber(stuNumber);
+		setStuGrade(stuGrade);
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -23,11 +32,11 @@ abstract class Student {
 		this.stuNumber = stuNumber;
 	}
 
-	public String getStuGrade() {
+	public int getStuGrade() {
 		return stuGrade;
 	}
 
-	public void setStuGrade(String stuGrade) {
+	public void setStuGrade(int stuGrade) {
 		this.stuGrade = stuGrade;
 	}
 

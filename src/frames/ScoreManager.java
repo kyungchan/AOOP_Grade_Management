@@ -3,6 +3,7 @@ package frames;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,14 +14,33 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import classes.ResultSetTableModel;
+
 public class ScoreManager extends JFrame implements ActionListener {
 	private MainTablePanel mtp;
 	
+	static final String DATABASE_URL = 
+			"jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
+	static final String USERNAME = "root";
+	static final String PASSWORD = "pass";
+
+	static final String COURSES_QUERY = "SELECT * FROM students NATURAL JOIN courses;";
+
+	private ResultSetTableModel coursesModel;
+		
 	public ScoreManager() {
+		try {
+			coursesModel = 
+					new ResultSetTableModel(DATABASE_URL, USERNAME, PASSWORD, COURSES_QUERY);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		JMenuItem menuItem;
 		KeyStroke key;
 		
-		mtp = new MainTablePanel();
+		mtp = new MainTablePanel(coursesModel);
 		
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu("ÆÄÀÏ");

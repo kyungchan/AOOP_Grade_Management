@@ -10,8 +10,9 @@ public class Course extends Student {
 	private int scoreReport;
 	private int scoreEtc;
 
-	public Course(int scoreAttand, int scoreMid, int scoreFinal, int scoreHomework, int scoreQuiz, int scorePPT,
-			int scoreReport, int scoreEtc) {
+	public Course(String name, String stuNumber, int stuGrade, int scoreAttand, int scoreMid, int scoreFinal,
+			int scoreHomework, int scoreQuiz, int scorePPT, int scoreReport, int scoreEtc) {
+		super(name, stuNumber, stuGrade);
 		this.scoreAttand = scoreAttand;
 		this.scoreMid = scoreMid;
 		this.scoreFinal = scoreFinal;
@@ -88,8 +89,9 @@ public class Course extends Student {
 
 	@Override
 	int totalScore(Ratio ratio) {
-		return ratio.getRatioAttand() * this.scoreAttand + ratio.getRatioMid() * this.scoreMid + ratio.getRatioFinal() * this.scoreFinal
-				+ ratio.getRatioHomework() * this.scoreHomework + ratio.getRatioQuiz() * this.scoreQuiz + ratio.getRatioPPT() * this.scorePPT
+		return ratio.getRatioAttand() * this.scoreAttand + ratio.getRatioMid() * this.scoreMid
+				+ ratio.getRatioFinal() * this.scoreFinal + ratio.getRatioHomework() * this.scoreHomework
+				+ ratio.getRatioQuiz() * this.scoreQuiz + ratio.getRatioPPT() * this.scorePPT
 				+ ratio.getRatioReport() * this.scoreReport + ratio.getRatioEtc() * this.scoreEtc;
 	}
 

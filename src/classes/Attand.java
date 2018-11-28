@@ -7,7 +7,8 @@ public class Attand extends Student {
 	private String serialAttand; // 출석 표시 0-결석 1-지각 2-출석
 									// 예) 222222222222202211122222
 
-	public Attand(String serialAttand) {
+	public Attand(String name, String stuNumber, int stuGrade, String serialAttand) {
+		super(name, stuNumber, stuGrade);
 		setSerialAttand(serialAttand);
 	}
 
