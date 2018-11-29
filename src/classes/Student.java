@@ -5,7 +5,7 @@ abstract class Student {
 	protected String stuNumber;
 	protected int stuGrade;
 
-	abstract int totalScore(Ratio ratio);
+	abstract int getTotalScore(Ratio ratio);
 
 	public Student() {
 	}

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,35 +14,37 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.table.TableColumn;
 
-import classes.ResultSetTableModel;
+import classes.ClassTableModel;
+import classes.Course;
+import classes.Ratio;
+import queries.CoursesQueries;
 
 public class ScoreManager extends JFrame implements ActionListener {
+	final protected Ratio ratio;
 	private MainTablePanel mtp;
-	
-	static final String DATABASE_URL = 
-			"jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
+	private List<Course> courses;
+	private CoursesQueries coursesQueries;
+	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
 
 	static final String COURSES_QUERY = "SELECT * FROM students NATURAL JOIN courses;";
 
-	private ResultSetTableModel coursesModel;
-		
+	private ClassTableModel coursesModel;
+
 	public ScoreManager() {
-		try {
-			coursesModel = 
-					new ResultSetTableModel(DATABASE_URL, USERNAME, PASSWORD, COURSES_QUERY);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		ratio = new Ratio(10, 15, 15, 20, 10, 10, 10, 10, 3);
+
+		coursesQueries = new CoursesQueries();
+		courses = coursesQueries.getAllCourses();
+		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		JMenuItem menuItem;
 		KeyStroke key;
-		
+
 		mtp = new MainTablePanel(coursesModel);
-		
+
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu("파일");
 		menuItem = new JMenuItem("불러오기");
@@ -55,7 +58,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		menuItem.addActionListener(this);
 		fileMenu.add(menuItem);
 		mb.add(fileMenu);
-		
+
 		JMenu scoreMenu = new JMenu("성적관리");
 		menuItem = new JMenuItem("출결관리");
 		menuItem.addActionListener(this);
@@ -72,7 +75,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		scoreMenu.add(menuItem);
 		mb.add(scoreMenu);
 		setJMenuBar(mb);
-		
+
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(new JButton(new ImageIcon("images/icon_open.png")));
@@ -81,7 +84,11 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBar.add(new JButton(new ImageIcon("images/icon_setting.png")));
 		add(toolBar, BorderLayout.NORTH);
 		add(mtp, BorderLayout.CENTER);
-		
+
+		System.out.println(mtp.scoreTable.getValueAt(1, 1));
+		mtp.scoreTable.getModel().setValueAt("테스트", 1, 1);
+		mtp.scoreTable.repaint();
+
 		this.setTitle("성적관리");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
@@ -91,6 +98,15 @@ public class ScoreManager extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		new ScoreManager();
 
+	}
+
+	public void addTotalCol() {
+		TableColumn column = new TableColumn(11);
+		column.setHeaderValue("총점");
+		mtp.scoreTable.addColumn(column);
+		for (int i = 0; i < courses.size(); i++) {
+			mtp.scoreTable.setValueAt(courses.get(i).getTotalScore(ratio), i, 11);
+		}
 	}
 
 	@Override
@@ -108,13 +124,14 @@ public class ScoreManager extends JFrame implements ActionListener {
 			System.out.println("모달");
 			break;
 		case "등급산출":
+			addTotalCol();
 			break;
 		case "그래프작성":
 			new GraphTablePanel();
 			break;
 		case "설정":
 			break;
-		}		
+		}
 	}
 
 }

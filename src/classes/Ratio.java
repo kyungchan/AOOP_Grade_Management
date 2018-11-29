@@ -11,6 +11,21 @@ public class Ratio {
 	private int ratioEtc;
 	private int ratioLateMiss;
 
+	
+	
+	public Ratio(int ratioAttand, int ratioMid, int ratioFinal, int ratioHomework, int ratioQuiz, int ratioPPT,
+			int ratioReport, int ratioEtc, int ratioLateMiss) {
+		this.ratioAttand = ratioAttand;
+		this.ratioMid = ratioMid;
+		this.ratioFinal = ratioFinal;
+		this.ratioHomework = ratioHomework;
+		this.ratioQuiz = ratioQuiz;
+		this.ratioPPT = ratioPPT;
+		this.ratioReport = ratioReport;
+		this.ratioEtc = ratioEtc;
+		this.ratioLateMiss = ratioLateMiss;
+	}
+
 	public int getRatioAttand() {
 		return ratioAttand;
 	}

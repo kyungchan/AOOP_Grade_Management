@@ -13,10 +13,15 @@ public class Attand extends Student {
 	}
 
 	@Override
-	int totalScore(Ratio ratio) {
+	public int getTotalScore(Ratio ratio) {
 		return 100 - 10 * (miss + late / 3) - 3 * (miss % 3);
 	}
 
+	public int getAttandState(int week) {
+		return serialAttand.charAt(week);
+		
+	}
+	
 	public int getMiss() {
 		return miss;
 	}

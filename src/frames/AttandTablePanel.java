@@ -59,7 +59,7 @@ public class AttandTablePanel extends JPanel {
 
 		scrollPane.setPreferredSize(new Dimension(900, 500));
 		scoreTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scoreTable.setCellSelectionEnabled(true);
+		scoreTable.setCellSelectionEnabled(true);		
 		setLayout(new GridLayout(1, 0));
 		add(scrollPane);
 	}

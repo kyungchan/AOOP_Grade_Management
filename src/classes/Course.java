@@ -88,11 +88,11 @@ public class Course extends Student {
 	}
 
 	@Override
-	int totalScore(Ratio ratio) {
-		return ratio.getRatioAttand() * this.scoreAttand + ratio.getRatioMid() * this.scoreMid
+	public int getTotalScore(Ratio ratio) {
+		return (ratio.getRatioAttand() * this.scoreAttand + ratio.getRatioMid() * this.scoreMid
 				+ ratio.getRatioFinal() * this.scoreFinal + ratio.getRatioHomework() * this.scoreHomework
 				+ ratio.getRatioQuiz() * this.scoreQuiz + ratio.getRatioPPT() * this.scorePPT
-				+ ratio.getRatioReport() * this.scoreReport + ratio.getRatioEtc() * this.scoreEtc;
+				+ ratio.getRatioReport() * this.scoreReport + ratio.getRatioEtc() * this.scoreEtc) / 100;
 	}
 
 }
