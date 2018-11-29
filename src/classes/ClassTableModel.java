@@ -17,16 +17,20 @@ public class ClassTableModel extends AbstractTableModel {
 	private Student[] objectsData;
 	private int ranks[];
 	private int totals[];
+	private String grades[];
 
 	public ClassTableModel(Object[] students) {
 		objectsData = (Student[]) students;
 		ranks = new int[objectsData.length];
 		totals = new int[objectsData.length];
+		grades = new String[objectsData.length];
 	}
 
 	@Override
 	public Class getColumnClass(int column) throws IllegalStateException {
 		if (column < 2) {
+			return String.class;
+		} else if (column == 13) {
 			return String.class;
 		} else {
 			return Integer.class;
@@ -75,6 +79,9 @@ public class ClassTableModel extends AbstractTableModel {
 				break;
 			case 12:
 				ranks[row] = (Integer) value;
+				break;
+			case 13:
+				grades[row] = (String) value;
 				break;
 			}
 		} else if (objectsData[row] instanceof Attand) {
@@ -150,6 +157,8 @@ public class ClassTableModel extends AbstractTableModel {
 				return totals[row];
 			case 12:
 				return ranks[row];
+			case 13:
+				return grades[row];
 			}
 		} else if (objectsData[row] instanceof Attand) {
 			if (column < 3) {
@@ -162,7 +171,7 @@ public class ClassTableModel extends AbstractTableModel {
 					return ((Attand) objectsData[row]).getStuGrade();
 				}
 			} else {
-				return ((Attand) objectsData[row]).getSerialAttand().charAt(column-3);
+				return ((Attand) objectsData[row]).getSerialAttand().charAt(column - 3);
 			}
 		}
 		return null;

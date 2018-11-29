@@ -18,6 +18,7 @@ import javax.swing.table.TableColumn;
 import classes.Attand;
 import classes.ClassTableModel;
 import classes.Course;
+import classes.Grade;
 import classes.Ratio;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
@@ -27,7 +28,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
 
-	final protected Ratio ratio;
+	private Ratio ratio;
+	private Grade grade;
 	private MainTablePanel mtp;
 	private List<Course> courses;
 	private List<Attand> attands;
@@ -37,13 +39,16 @@ public class ScoreManager extends JFrame implements ActionListener {
 	private ClassTableModel attandsModel;
 
 	public ScoreManager() {
-		ratio = new Ratio(10, 15, 15, 20, 10, 10, 10, 10, 3);
 		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
 		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
 		attands = attandsQueries.getAllAttands();
+
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
+
+		ratio = new Ratio(10, 15, 15, 20, 10, 10, 10, 10, 3);
+		grade = new Grade(10, 15, 15, 15, 15, 15, 10, 5);
 
 		JMenuItem menuItem;
 		KeyStroke key;
@@ -101,9 +106,31 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 	}
 
+	public void addGradeCol() {
+		TableColumn column = new TableColumn(13);
+		column.setHeaderValue("등급");
+		column.setPreferredWidth(30);
+		mtp.scoreTable.addColumn(column);
+		int[] ratios = grade.getAllRatio();
+		String[] gradeString = { "A+", "A0", "B+", "B0", "C+", "C0", "D", "F" };
+		int ratioSum;
+		for (int i = 0; i < courses.size(); i++) {
+			ratioSum = 0;
+			for (int j = 0; j < ratios.length; j++) {
+				if ((int) mtp.scoreTable.getValueAt(i, 12) <= (ratioSum + ratios[j]) * courses.size() / 100) {
+					mtp.scoreTable.setValueAt(gradeString[j], i, 13);
+					break;
+				} else {
+					ratioSum += ratios[j];
+				}
+			}
+		}
+	}
+
 	public void addTotalCol() {
 		TableColumn column = new TableColumn(11);
 		column.setHeaderValue("총점");
+		column.setPreferredWidth(30);
 		mtp.scoreTable.addColumn(column);
 		for (int i = 0; i < courses.size(); i++)
 			mtp.scoreTable.setValueAt(courses.get(i).getTotalScore(ratio), i, 11);
@@ -114,6 +141,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		int total[] = new int[courses.size()];
 		TableColumn column = new TableColumn(12);
 		column.setHeaderValue("석차");
+		column.setPreferredWidth(30);
 		mtp.scoreTable.addColumn(column);
 		for (int i = 0; i < courses.size(); i++) {
 			ranking[i] = 1;
@@ -146,6 +174,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		case "등급산출":
 			addTotalCol();
 			addRankCol();
+			addGradeCol();
 			break;
 		case "그래프작성":
 			new GraphTablePanel();

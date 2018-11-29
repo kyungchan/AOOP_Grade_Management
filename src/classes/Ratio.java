@@ -11,8 +11,6 @@ public class Ratio {
 	private int ratioEtc;
 	private int ratioLateMiss;
 
-	
-	
 	public Ratio(int ratioAttand, int ratioMid, int ratioFinal, int ratioHomework, int ratioQuiz, int ratioPPT,
 			int ratioReport, int ratioEtc, int ratioLateMiss) {
 		this.ratioAttand = ratioAttand;
