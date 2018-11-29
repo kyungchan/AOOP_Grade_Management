@@ -3,6 +3,7 @@ package frames;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -126,7 +127,35 @@ public class ScoreManager extends JFrame implements ActionListener {
 			}
 		}
 	}
-
+	int j=0;
+	ArrayList<Integer> arr = new ArrayList<>();
+		public ArrayList<Integer> Num() {
+			int k=0,l=0,m=0,t=0,a=0,d=0,s=0,e=0,w=0,y=0;
+			for (int i = 0; i < courses.size(); i++) {
+			int j = courses.get(i).getTotalScore(ratio);
+			if( j<10) k++;
+			else if(j<20) l++;
+			else if(j<30) m++;
+			else if(j<40) t++;
+			else if(j<50) a++;
+			else if(j<60) d++;
+			else if(j<70) s++;
+			else if(j<80) e++;
+			else if(j<90) w++;
+			else if(j<100) y++;
+			}
+			arr.add(k);
+			arr.add(l);
+			arr.add(m);
+			arr.add(t);
+			arr.add(a);
+			arr.add(d);
+			arr.add(s);
+			arr.add(e);
+			arr.add(w);
+			arr.add(y);
+			return arr;
+		}
 	public void addTotalCol() {
 		TableColumn column = new TableColumn(11);
 		column.setHeaderValue("รัมก");
