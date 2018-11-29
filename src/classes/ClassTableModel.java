@@ -72,6 +72,10 @@ public class ClassTableModel extends AbstractTableModel {
 				break;
 			case 11:
 				totals[row] = (Integer) value;
+				break;
+			case 12:
+				ranks[row] = (Integer) value;
+				break;
 			}
 		} else if (objectsData[row] instanceof Attand) {
 			if (column < 3) {
@@ -144,6 +148,8 @@ public class ClassTableModel extends AbstractTableModel {
 				return ((Course) objectsData[row]).getScoreEtc();
 			case 11:
 				return totals[row];
+			case 12:
+				return ranks[row];
 			}
 		} else if (objectsData[row] instanceof Attand) {
 			if (column < 3) {

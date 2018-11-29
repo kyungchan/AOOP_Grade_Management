@@ -26,7 +26,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
-	
+
 	final protected Ratio ratio;
 	private MainTablePanel mtp;
 	private List<Course> courses;
@@ -44,7 +44,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		attands = attandsQueries.getAllAttands();
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
-		
+
 		JMenuItem menuItem;
 		KeyStroke key;
 
@@ -105,9 +105,27 @@ public class ScoreManager extends JFrame implements ActionListener {
 		TableColumn column = new TableColumn(11);
 		column.setHeaderValue("총점");
 		mtp.scoreTable.addColumn(column);
-		for (int i = 0; i < courses.size(); i++) {
+		for (int i = 0; i < courses.size(); i++)
 			mtp.scoreTable.setValueAt(courses.get(i).getTotalScore(ratio), i, 11);
+	}
+
+	public void addRankCol() {
+		int ranking[] = new int[courses.size()];
+		int total[] = new int[courses.size()];
+		TableColumn column = new TableColumn(12);
+		column.setHeaderValue("석차");
+		mtp.scoreTable.addColumn(column);
+		for (int i = 0; i < courses.size(); i++) {
+			ranking[i] = 1;
+			total[i] = (int) mtp.scoreTable.getValueAt(i, 11);
 		}
+		for (int i = 0; i < courses.size(); i++)
+			for (int j = 0; j < courses.size(); j++)
+				if (total[i] < total[j])
+					ranking[i]++;
+		for (int i = 0; i < courses.size(); i++)
+			mtp.scoreTable.setValueAt(ranking[i], i, 12);
+
 	}
 
 	@Override
@@ -119,6 +137,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		case "내보내기":
 			break;
 		case "종료":
+			System.exit(1);
 			break;
 		case "출결관리":
 			new AttandManager(attandsModel);
@@ -126,6 +145,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 			break;
 		case "등급산출":
 			addTotalCol();
+			addRankCol();
 			break;
 		case "그래프작성":
 			new GraphTablePanel();
