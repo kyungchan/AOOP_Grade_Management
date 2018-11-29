@@ -3,7 +3,6 @@ package frames;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -16,30 +15,36 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
+import classes.Attand;
 import classes.ClassTableModel;
 import classes.Course;
 import classes.Ratio;
+import queries.AttandsQueries;
 import queries.CoursesQueries;
 
 public class ScoreManager extends JFrame implements ActionListener {
-	final protected Ratio ratio;
-	private MainTablePanel mtp;
-	private List<Course> courses;
-	private CoursesQueries coursesQueries;
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
-
-	static final String COURSES_QUERY = "SELECT * FROM students NATURAL JOIN courses;";
-
+	
+	final protected Ratio ratio;
+	private MainTablePanel mtp;
+	private List<Course> courses;
+	private List<Attand> attands;
+	private CoursesQueries coursesQueries;
+	private AttandsQueries attandsQueries;
 	private ClassTableModel coursesModel;
+	private ClassTableModel attandsModel;
 
 	public ScoreManager() {
 		ratio = new Ratio(10, 15, 15, 20, 10, 10, 10, 10, 3);
-
-		coursesQueries = new CoursesQueries();
+		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
+		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
+		attands = attandsQueries.getAllAttands();
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
+		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
+		
 		JMenuItem menuItem;
 		KeyStroke key;
 
@@ -85,10 +90,6 @@ public class ScoreManager extends JFrame implements ActionListener {
 		add(toolBar, BorderLayout.NORTH);
 		add(mtp, BorderLayout.CENTER);
 
-		System.out.println(mtp.scoreTable.getValueAt(1, 1));
-		mtp.scoreTable.getModel().setValueAt("테스트", 1, 1);
-		mtp.scoreTable.repaint();
-
 		this.setTitle("성적관리");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
@@ -120,7 +121,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		case "종료":
 			break;
 		case "출결관리":
-			new AttandManager();
+			new AttandManager(attandsModel);
 			System.out.println("모달");
 			break;
 		case "등급산출":

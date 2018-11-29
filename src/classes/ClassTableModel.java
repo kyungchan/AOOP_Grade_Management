@@ -9,12 +9,16 @@ public class ClassTableModel extends AbstractTableModel {
 
 	private String[] courseColumnNames = { "切锅", "切积捞抚", "切斥", "免搬(10%)", "吝埃(15%)", "扁富(15%)", "苞力(20%)", "柠令(10%)",
 			"惯钎(10%)", "焊绊辑(10%)", "扁鸥(10%)" };
+	private String[] attandColumnNames = { "切锅", "切积捞抚", "切斥", "1林-1", "1林-2", "2林-1", "2林-2", "3林-1", "3林-2", "4林-1",
+			"4林-2", "5林-1", "5林-2", "6林-1", "6林-2", "7林-1", "7林-2", "8林-1", "8林-2", "9林-1", "9林-2", "10林-1", "10林-2",
+			"11林-1", "11林-2", "12林-1", "12林-2", "13林-1", "13林-2", "14林-1", "14林-2", "15林-1", "15林-2", "16林-1",
+			"16林-2" };
 
 	private Student[] objectsData;
 	private int ranks[];
 	private int totals[];
+
 	public ClassTableModel(Object[] students) {
-		
 		objectsData = (Student[]) students;
 		ranks = new int[objectsData.length];
 		totals = new int[objectsData.length];
@@ -67,11 +71,9 @@ public class ClassTableModel extends AbstractTableModel {
 				((Course) objectsData[row]).setScoreEtc((Integer) value);
 				break;
 			case 11:
-				totals[row] = (Integer)value;
+				totals[row] = (Integer) value;
 			}
-		} else if (objectsData[row] instanceof Attand)
-
-		{
+		} else if (objectsData[row] instanceof Attand) {
 			if (column < 3) {
 				switch (column) {
 				case 0:
@@ -93,21 +95,19 @@ public class ClassTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() throws IllegalStateException {
-		if (objectsData[0] instanceof Course) {
+		if (objectsData[0] instanceof Course)
 			return courseColumnNames.length;
-		} else if (objectsData[0] instanceof Attand) {
-			return 5;
-		}
+		else if (objectsData[0] instanceof Attand)
+			return attandColumnNames.length;
 		return 0;
 	}
 
 	@Override
 	public String getColumnName(int column) throws IllegalStateException {
-		if (objectsData[0] instanceof Course) {
+		if (objectsData[0] instanceof Course)
 			return courseColumnNames[column];
-		} else if (objectsData[0] instanceof Attand) {
-			return courseColumnNames[column];
-		}
+		else if (objectsData[0] instanceof Attand)
+			return attandColumnNames[column];
 		return "";
 	}
 
@@ -156,7 +156,7 @@ public class ClassTableModel extends AbstractTableModel {
 					return ((Attand) objectsData[row]).getStuGrade();
 				}
 			} else {
-				return ((Attand) objectsData[row]).getSerialAttand().charAt(column);
+				return ((Attand) objectsData[row]).getSerialAttand().charAt(column-3);
 			}
 		}
 		return null;

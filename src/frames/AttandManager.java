@@ -5,12 +5,14 @@ import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
+import classes.Attand;
+import classes.ClassTableModel;
+
 public class AttandManager extends JDialog {
-	public AttandManager() {
-		AttandTablePanel atp = new AttandTablePanel();
+	public AttandManager(ClassTableModel tableModel) {
+		AttandTablePanel atp = new AttandTablePanel(tableModel);
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(new JButton(new ImageIcon("images/icon_check.png")));
