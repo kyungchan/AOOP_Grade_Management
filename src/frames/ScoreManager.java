@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -175,7 +176,15 @@ public class ScoreManager extends JFrame implements ActionListener {
 			}
 		}
 	}
+	
+	public ArrayList<String> addGradeNum() {
+		ArrayList<String> arr = new ArrayList<>();
+		for (int i = 0; i < courses.size(); i++) {
+			arr.add((String) mtp.scoreTable.getValueAt(i, 13));
+		}
 
+		return arr;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
@@ -199,7 +208,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.");
 			break;
 		case "그래프작성":
-			new GraphTablePanel(courses, ratio);
+			new GraphTablePanel(courses, ratio, addGradeNum());
 			break;
 		case "설정":
 			break;

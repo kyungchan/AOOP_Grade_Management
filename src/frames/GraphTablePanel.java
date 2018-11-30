@@ -10,13 +10,12 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import classes.Course;
 import classes.Ratio;
 
+
 @SuppressWarnings("serial")
 public class GraphTablePanel extends JFrame {
-
 	private Container c;
 	private int[] data = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	private int[] percent = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -25,14 +24,15 @@ public class GraphTablePanel extends JFrame {
 			Color.DARK_GRAY, Color.GREEN, Color.PINK, Color.LIGHT_GRAY };
 	private String[] score = { "0~9", "10~19", "20~29", "30~39", "40~49", "50~59", "60~69", "70~79", "80~89",
 			"90~100" };
-
 	private List<Course> courses;
 	private Ratio ratio;
 	private ArrayList<Integer> chartData;
+	private ArrayList<String> grade;
+	public GraphTablePanel(List<Course> courses, Ratio ratio, ArrayList<String> grade) {
 
-	public GraphTablePanel(List<Course> courses, Ratio ratio) {
 		setCourses(courses);
 		setRatio(ratio);
+		setGrade(grade);
 		chartData = getChartData();
 		setTitle("통계 그래프");
 		c = getContentPane();
@@ -41,7 +41,7 @@ public class GraphTablePanel extends JFrame {
 
 		ChartPanel chartPanel = new ChartPanel();
 		c.add(chartPanel, BorderLayout.CENTER);
-		setBounds(400, 400, 450, 450);
+		setBounds(400, 400, 600, 500);
 
 		int sum = 0;
 
@@ -56,7 +56,7 @@ public class GraphTablePanel extends JFrame {
 			arc[i] = 360 * percent[i] / 100;
 
 			this.setVisible(true);
-
+			
 		}
 	}
 
@@ -98,7 +98,41 @@ public class GraphTablePanel extends JFrame {
 		arr.add(y);
 		return arr;
 	}
+	public ArrayList<String> getGrade(){
+		ArrayList<String> arr = new ArrayList<>();
 
+		for (int i = 0; i < courses.size(); i++) {
+			arr.add(grade.get(i));
+		}
+		return arr;
+	}
+	
+	public ArrayList<Integer> getGradeNum() {
+		ArrayList<Integer> arr = new ArrayList<>();
+		int ap=0,a=0,bp=0,b=0,cp=0,c=0,d=0,f=0;
+		for(int i=0;i<courses.size();i++) {
+			if(getGrade().get(i)=="A+")  { ap++;}
+			else if(getGrade().get(i)=="A0") { a++;}
+			else if(getGrade().get(i)=="B+") { bp++;}
+			else if(getGrade().get(i)=="B0") {b++;}
+			else if(getGrade().get(i)=="C+") { cp++;}
+			else if(getGrade().get(i)=="C0") {c++;}
+			else if(getGrade().get(i)=="D") {d++;}
+			else {f++;}
+			}
+		arr.add(ap);
+		arr.add(a);
+		arr.add(bp);
+		arr.add(b);
+		arr.add(cp);
+		arr.add(c);
+		arr.add(d);
+		arr.add(f);
+	
+		return arr;
+		
+	}
+	
 	public void setRatio(Ratio ratio) {
 		this.ratio = ratio;
 	}
@@ -106,8 +140,11 @@ public class GraphTablePanel extends JFrame {
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
 	}
-
+	public void setGrade(ArrayList<String> grade) {
+		this.grade = grade;
+	}
 	class ChartPanel extends JPanel {
+		String[] Score= {"A+","A","B+","B","C+","C","D","F"};
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -116,11 +153,16 @@ public class GraphTablePanel extends JFrame {
 			g.setFont(new Font("malgun", Font.BOLD, 15));
 			for (int i = 0; i < data.length; i++) {
 				g.setColor(col[i]);
-				g.drawString(score[i] + ":" + percent[i] + "" + " %", 300, 100 + (i * 30));
+				g.drawString(score[i]+" 점" + " : " + percent[i] + "" + " 명", 300, 100 + (i * 30));
+			
 				g.fillArc(50, 120, 200, 200, startAngle, arc[i]);
 				startAngle += arc[i];
 			}
-
+			
+			g.setColor(col[4]);
+			for(int i=0;i<Score.length;i++)
+				g.drawString(Score[i]+" : "+getGradeNum().get(i) + "" + "명", 450, 100+i*40 );
+		
 		}
 	}
 
