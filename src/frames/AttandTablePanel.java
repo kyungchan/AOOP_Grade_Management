@@ -2,7 +2,6 @@ package frames;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.sql.SQLException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,7 +10,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import classes.ClassTableModel;
-import classes.ResultSetTableModel;
 
 public class AttandTablePanel extends JPanel {
 	private ClassTableModel attandModel;

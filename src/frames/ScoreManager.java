@@ -1,6 +1,7 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -8,12 +9,14 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import classes.Attand;
@@ -43,6 +46,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
 		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
+		courses.add(new Course("평균", "", 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		attands = attandsQueries.getAllAttands();
 
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
@@ -86,7 +90,6 @@ public class ScoreManager extends JFrame implements ActionListener {
 		scoreMenu.add(menuItem);
 		mb.add(scoreMenu);
 		setJMenuBar(mb);
-
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(new JButton(new ImageIcon("images/icon_open.png")));
@@ -95,6 +98,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBar.add(new JButton(new ImageIcon("images/icon_setting.png")));
 		add(toolBar, BorderLayout.NORTH);
 		add(mtp, BorderLayout.CENTER);
+
+		updateAvg();
 
 		this.setTitle("성적관리");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,24 +112,14 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 	}
 
-	public void addGradeCol() {
-		TableColumn column = new TableColumn(13);
-		column.setHeaderValue("등급");
-		column.setPreferredWidth(30);
-		mtp.scoreTable.addColumn(column);
-		int[] ratios = grade.getAllRatio();
-		String[] gradeString = { "A+", "A0", "B+", "B0", "C+", "C0", "D", "F" };
-		int ratioSum;
-		for (int i = 0; i < courses.size(); i++) {
-			ratioSum = 0;
-			for (int j = 0; j < ratios.length; j++) {
-				if ((int) mtp.scoreTable.getValueAt(i, 12) <= (ratioSum + ratios[j]) * courses.size() / 100) {
-					mtp.scoreTable.setValueAt(gradeString[j], i, 13);
-					break;
-				} else {
-					ratioSum += ratios[j];
-				}
+	public void updateAvg() {
+		int sum = 0;
+		for (int i = 3; i < 11; i++) {
+			for (int j = 0; j < courses.size() - 1; j++) {
+				sum += (int) mtp.scoreTable.getValueAt(j, i);
 			}
+			mtp.scoreTable.setValueAt((int) sum / (courses.size() - 1), courses.size() - 1, i);
+			sum = 0;
 		}
 	}
 
@@ -132,29 +127,53 @@ public class ScoreManager extends JFrame implements ActionListener {
 		TableColumn column = new TableColumn(11);
 		column.setHeaderValue("총점");
 		column.setPreferredWidth(30);
+		column.setCellRenderer(mtp.getFixCellCenter());
 		mtp.scoreTable.addColumn(column);
 		for (int i = 0; i < courses.size(); i++)
 			mtp.scoreTable.setValueAt(courses.get(i).getTotalScore(ratio), i, 11);
 	}
 
 	public void addRankCol() {
-		int ranking[] = new int[courses.size()];
-		int total[] = new int[courses.size()];
+		int ranking[] = new int[courses.size() - 1];
+		int total[] = new int[courses.size() - 1];
 		TableColumn column = new TableColumn(12);
 		column.setHeaderValue("석차");
 		column.setPreferredWidth(30);
+		column.setCellRenderer(mtp.getFixCellCenter());
 		mtp.scoreTable.addColumn(column);
-		for (int i = 0; i < courses.size(); i++) {
+		for (int i = 0; i < courses.size() - 1; i++) {
 			ranking[i] = 1;
 			total[i] = (int) mtp.scoreTable.getValueAt(i, 11);
 		}
-		for (int i = 0; i < courses.size(); i++)
-			for (int j = 0; j < courses.size(); j++)
+		for (int i = 0; i < courses.size() - 1; i++)
+			for (int j = 0; j < courses.size() - 1; j++)
 				if (total[i] < total[j])
 					ranking[i]++;
-		for (int i = 0; i < courses.size(); i++)
+		for (int i = 0; i < courses.size() - 1; i++)
 			mtp.scoreTable.setValueAt(ranking[i], i, 12);
 
+	}
+
+	public void addGradeCol() {
+		TableColumn column = new TableColumn(13);
+		column.setHeaderValue("등급");
+		column.setPreferredWidth(30);
+		column.setCellRenderer(mtp.getFixCellCenter());
+		mtp.scoreTable.addColumn(column);
+		int[] ratios = grade.getAllRatio();
+		String[] gradeString = { "A+", "A0", "B+", "B0", "C+", "C0", "D", "F" };
+		int ratioSum;
+		for (int i = 0; i < courses.size() - 1; i++) {
+			ratioSum = 0;
+			for (int j = 0; j < ratios.length; j++) {
+				if ((int) mtp.scoreTable.getValueAt(i, 12) <= (ratioSum + ratios[j]) * (courses.size() - 1) / 100) {
+					mtp.scoreTable.setValueAt(gradeString[j], i, 13);
+					break;
+				} else {
+					ratioSum += ratios[j];
+				}
+			}
+		}
 	}
 
 	@Override
@@ -166,7 +185,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 		case "내보내기":
 			break;
 		case "종료":
-			if(JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "성적관리자",  JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+			if (JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "성적관리자",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 				System.exit(1);
 			break;
 		case "출결관리":

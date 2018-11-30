@@ -26,6 +26,21 @@ public class ClassTableModel extends AbstractTableModel {
 		grades = new String[objectsData.length];
 	}
 
+	
+	
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		if(row == getRowCount()-1)
+			return false;
+		else if (column < 3)
+			return false;
+		 else if (column > 10) 
+			return false;
+		else 
+			return true;
+	}
+
+
 	@Override
 	public Class getColumnClass(int column) throws IllegalStateException {
 		if (column < 2) {
