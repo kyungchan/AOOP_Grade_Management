@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 import classes.ClassTableModel;
 
@@ -45,6 +46,7 @@ public class MainTablePanel extends JPanel {
 		scoreTable.setCellSelectionEnabled(true);
 		setLayout(new GridLayout(1, 0));
 		add(scrollPane);
+		scoreTable.setRowSorter(new TableRowSorter(tableModel));
 	}
 
 	public TableCellRenderer getFixCellCenter() {

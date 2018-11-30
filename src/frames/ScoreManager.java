@@ -49,7 +49,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		courses = coursesQueries.getAllCourses();
 		courses.add(new Course("ЦђБе", "", 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		attands = attandsQueries.getAllAttands();
-
+		
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
 
@@ -106,6 +106,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
+		
 	}
 
 	public static void main(String[] args) {
