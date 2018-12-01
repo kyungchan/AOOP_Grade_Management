@@ -24,20 +24,21 @@ public class AttandsQueries {
 			connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 
 			selectAllAttands = connection.prepareStatement("SELECT * FROM students NATURAL JOIN attands;");
-			updateAttandByStuNumber = connection.prepareStatement("UPDATE attands SET ? = ? WHERE studentNum = ?;");
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			System.exit(1);
 		}
 	}
 
-	public int updateAttand(int studentNumber, int col, int value) {
+	public int updateAttand(String studentNumber, int col, int value) {
 		int result = 0;
 		try {
-			updateAttandByStuNumber.setInt(1, studentNumber);
-			updateAttandByStuNumber.setString(2, colName[col]);
-			updateAttandByStuNumber.setInt(3, value);
+			updateAttandByStuNumber = connection
+					.prepareStatement("UPDATE attands SET " + colName[col] + " = ? WHERE studentNum = ?;");
+			updateAttandByStuNumber.setInt(1, value);
+			updateAttandByStuNumber.setString(2, studentNumber);
 			result = updateAttandByStuNumber.executeUpdate();
+			System.out.println(":UPDATE attands SET " + colName[col] + " = " + value + " WHERE studentNum = " + studentNumber);
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			close();

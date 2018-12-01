@@ -215,7 +215,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-		case "불러오기": // 메뉴바
+		case "불러오기":
 			System.out.println("ㅂㄹㅇㄱ");
 			break;
 		case "내보내기":

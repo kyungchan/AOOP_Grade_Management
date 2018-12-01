@@ -32,10 +32,10 @@ public class CoursesQueries {
 		}
 	}
 
-	public int updateScore(int studentNumber, String colName, int value) {
+	public int updateScore(String studentNumber, String colName, int value) {
 		int result = 0;
 		try {
-			updateScoreByStuNumber.setInt(1, studentNumber);
+			updateScoreByStuNumber.setString(1, studentNumber);
 			updateScoreByStuNumber.setString(2, colName);
 			updateScoreByStuNumber.setInt(3, value);
 			result = updateScoreByStuNumber.executeUpdate();
