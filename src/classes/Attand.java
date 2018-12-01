@@ -37,7 +37,13 @@ public class Attand extends Student {
 	public String getSerialAttand() {
 		return serialAttand;
 	}
-
+	
+	public void setAttand(int week, int status) {
+		StringBuilder builder = new StringBuilder(this.serialAttand);
+		builder.setCharAt(week, (char)(status + 48));
+		setSerialAttand(builder.toString());
+	}
+	
 	public void setSerialAttand(String serialAttand) {
 		this.serialAttand = serialAttand;
 		this.miss = 0;
@@ -45,13 +51,13 @@ public class Attand extends Student {
 		this.late = 0;
 		for (int i = 0; i < 32; i++) {
 			switch (serialAttand.charAt(i)) {
-			case 0:
+			case '0':
 				this.miss++;
 				break;
-			case 1:
+			case '1':
 				this.late++;
 				break;
-			case 2:
+			case '2':
 				this.check++;
 				break;
 			}

@@ -9,45 +9,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import classes.Attand;
-import classes.Course;
 
 public class AttandsQueries {
 	private Connection connection = null;
 	private PreparedStatement selectAllAttands = null;
-	private PreparedStatement selectStudentByStuNumber = null;
-	private PreparedStatement updateScoreByStuNumber = null;
+	private PreparedStatement updateAttandByStuNumber = null;
+	private String colName[] = { "StudentNum", "Week1_1", "Week1_2", "Week2_1", "Week2_2", "Week3_1", "Week3_2",
+			"Week4_1", "Week4_2", "Week5_1", "Week5_2", "Week6_1", "Week6_2", "Week7_1", "Week7_2", "Week8_1",
+			"Week8_2", "Week9_1", "Week9_2", "Week10_1", "Week10_2", "Week11_1", "Week11_2", "Week12_1", "Week12_2",
+			"Week13_1", "Week13_2", "Week14_1", "Week14_2", "Week15_1", "Week15_2", "Week16_1", "Week16_2" };
 
 	public AttandsQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
 		try {
 			connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 
 			selectAllAttands = connection.prepareStatement("SELECT * FROM students NATURAL JOIN attands;");
-			selectStudentByStuNumber = connection
-					.prepareStatement("SELECT * FROM students NATURAL JOIN attands WHERER studentNum = ?;");
-			updateScoreByStuNumber = connection.prepareStatement("UPDATE courses SET ? = ? WHERE studentNum = ?;");
+			updateAttandByStuNumber = connection.prepareStatement("UPDATE attands SET ? = ? WHERE studentNum = ?;");
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			System.exit(1);
 		}
 	}
 
-	public int updateScore(int studentNumber, String colName, int value) {
+	public int updateAttand(int studentNumber, int col, int value) {
 		int result = 0;
 		try {
-			updateScoreByStuNumber.setInt(1, studentNumber);
-			updateScoreByStuNumber.setString(2, colName);
-			updateScoreByStuNumber.setInt(3, value);
-			result = updateScoreByStuNumber.executeUpdate();
+			updateAttandByStuNumber.setInt(1, studentNumber);
+			updateAttandByStuNumber.setString(2, colName[col]);
+			updateAttandByStuNumber.setInt(3, value);
+			result = updateAttandByStuNumber.executeUpdate();
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			close();
 		}
 		return result;
-	}
-
-	public String serializeAttand() {
-		return null;
-
 	}
 
 	public List<Attand> getAllAttands() {

@@ -44,9 +44,10 @@ public class MainTablePanel extends JPanel {
 		scoreTable.getColumn(columnNames[2]).setCellRenderer(getFixCellCenter);
 		scoreTable.changeSelection(10, 0, false, false);
 		scoreTable.setCellSelectionEnabled(true);
+		scoreTable.setRowSorter(new TableRowSorter(tableModel));
 		setLayout(new GridLayout(1, 0));
 		add(scrollPane);
-		scoreTable.setRowSorter(new TableRowSorter(tableModel));
+
 	}
 
 	public TableCellRenderer getFixCellCenter() {
