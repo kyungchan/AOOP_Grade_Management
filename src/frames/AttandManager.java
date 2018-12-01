@@ -19,7 +19,7 @@ public class AttandManager extends JDialog implements ActionListener {
 	private AttandTablePanel atp;
 	private AttandsQueries attandsQueries;
 
-	public AttandManager(ClassTableModel tableModel, AttandsQueries attandsQueries) {
+	public AttandManager(ClassTableModel tableModel, AttandsQueries attandsQueries, String studentNum) {
 		this.attandsQueries = attandsQueries;
 		atp = new AttandTablePanel(tableModel);
 		JToolBar toolBar = new JToolBar();
@@ -42,6 +42,16 @@ public class AttandManager extends JDialog implements ActionListener {
 
 		add(toolBar, BorderLayout.NORTH);
 		add(atp, BorderLayout.CENTER);
+		if (studentNum != null) {
+			for (int i = 0; i < tableModel.getRowCount(); i++) {
+				if (atp.getAttandModel().getValueAt(i, 0).equals(studentNum)) {
+					atp.getScoreTable().requestFocus();
+					atp.getScoreTable().changeSelection(i, 0, false, false);
+					break;
+				}
+			}
+		}
+
 		this.setTitle("출결관리");
 		this.pack();
 		this.setModal(true);

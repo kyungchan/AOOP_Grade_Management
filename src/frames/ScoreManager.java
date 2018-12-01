@@ -1,6 +1,7 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.RowSorterEvent;
@@ -63,6 +65,18 @@ public class ScoreManager extends JFrame implements ActionListener {
 		KeyStroke key;
 
 		mtp = new MainTablePanel(coursesModel);
+		mtp.scoreTable.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent mouseEvent) {
+		        JTable table =(JTable) mouseEvent.getSource();
+		        Point point = mouseEvent.getPoint();
+		        int row = table.rowAtPoint(point);
+		        int col = table.columnAtPoint(point);
+		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && col == 3) {
+		        	new AttandManager(attandsModel, attandsQueries, (String)mtp.scoreTable.getValueAt(row, 0));
+		        }
+		    }
+		});
+		
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu("파일");
 		menuItem = new JMenuItem("불러오기");
@@ -226,7 +240,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				System.exit(1);
 			break;
 		case "출결관리":
-			new AttandManager(attandsModel, attandsQueries);
+			new AttandManager(attandsModel, attandsQueries, null);
 			break;
 		case "등급산출":
 			addTotalCol();

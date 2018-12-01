@@ -3,6 +3,9 @@ package frames;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +17,7 @@ import javax.swing.table.TableRowSorter;
 
 import classes.ClassTableModel;
 
-public class MainTablePanel extends JPanel {
+public class MainTablePanel extends JPanel{
 	protected JTable scoreTable;
 	private ClassTableModel tableModel;
 	private String[] columnNames = { "학번", "학생이름", "학년", "출결(10%)", "중간(15%)", "기말(15%)", "과제(20%)", "퀴즈(10%)",
@@ -45,6 +48,9 @@ public class MainTablePanel extends JPanel {
 		scoreTable.changeSelection(10, 0, false, false);
 		scoreTable.setCellSelectionEnabled(true);
 		scoreTable.setRowSorter(new TableRowSorter(tableModel));
+		
+		
+		
 		setLayout(new GridLayout(1, 0));
 		add(scrollPane);
 
