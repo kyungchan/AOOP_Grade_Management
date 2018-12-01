@@ -76,7 +76,7 @@ public class AttandManager extends JDialog implements ActionListener {
 				break;
 			}
 		} else {
-			JOptionPane.showMessageDialog(null, "변경 할 출석을 선택하지 않았습니다.");
+			JOptionPane.showMessageDialog(null, "변경할 항목을 선택하지 않았습니다.");
 		}
 	}
 }

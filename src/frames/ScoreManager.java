@@ -95,10 +95,28 @@ public class ScoreManager extends JFrame implements ActionListener {
 		setJMenuBar(mb);
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
-		toolBar.add(new JButton(new ImageIcon("images/icon_open.png")));
-		toolBar.add(new JButton(new ImageIcon("images/icon_save.png")));
-		toolBar.add(new JButton(new ImageIcon("images/icon_chart.png")));
-		toolBar.add(new JButton(new ImageIcon("images/icon_setting.png")));
+		JButton toolBarBtn;
+
+		toolBarBtn = new JButton(new ImageIcon("images/icon_open.png"));
+		toolBarBtn.setActionCommand("불러오기");
+		toolBarBtn.addActionListener(this);
+		toolBar.add(toolBarBtn);
+
+		toolBarBtn =  new JButton(new ImageIcon("images/icon_save.png"));
+		toolBarBtn.setActionCommand("save");
+		toolBarBtn.addActionListener(this);
+		toolBar.add(toolBarBtn);
+
+		toolBarBtn = new JButton(new ImageIcon("images/icon_chart.png"));
+		toolBarBtn.setActionCommand("그래프작성");
+		toolBarBtn.addActionListener(this);
+		toolBar.add(toolBarBtn);
+
+		toolBarBtn = new JButton(new ImageIcon("images/icon_setting.png"));
+		toolBarBtn.setActionCommand("setting");
+		toolBarBtn.addActionListener(this);
+		toolBar.add(toolBarBtn);
+
 		add(toolBar, BorderLayout.NORTH);
 		add(mtp, BorderLayout.CENTER);
 
@@ -197,7 +215,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-		case "불러오기":
+		case "불러오기": // 메뉴바
 			System.out.println("ㅂㄹㅇㄱ");
 			break;
 		case "내보내기":
@@ -218,7 +236,10 @@ public class ScoreManager extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.");
 			break;
 		case "그래프작성":
-			new GraphTablePanel(courses, ratio, addGradeNum());
+			if(flagTotalCol)
+				new GraphTablePanel(courses, ratio, addGradeNum());
+			else 
+				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.");
 			break;
 		case "설정":
 			break;
