@@ -206,10 +206,17 @@ public class ClassTableModel extends AbstractTableModel {
 					return ((Attand) objectsData.get(row)).getMiss();
 				}
 			} else {
-				return ((Attand) objectsData.get(row)).getSerialAttand().charAt(column - 6);
+				switch (((Attand) objectsData.get(row)).getSerialAttand().charAt(column - 6)) {
+				case '0':
+					return "X";
+				case '1':
+					return "¡â";
+				case '2':
+					return "¡Û";
+				}
 			}
 		}
+
 		return null;
 	}
-
 }
