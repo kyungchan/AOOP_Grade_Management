@@ -80,7 +80,7 @@ public class AttandManager extends JDialog implements ActionListener {
 					for (int col : selectedCols)
 						if (col > 5)
 							if (attandsQueries.updateAttand((String) atp.getScoreTable().getValueAt(row, 0), col - 5,
-									2) == 0)
+									1) == 0)
 								JOptionPane.showMessageDialog(null, "DB오류");
 							else
 								atp.getScoreTable().setValueAt(1, row, col);
@@ -90,7 +90,7 @@ public class AttandManager extends JDialog implements ActionListener {
 					for (int col : selectedCols)
 						if (col > 5)
 							if (attandsQueries.updateAttand((String) atp.getScoreTable().getValueAt(row, 0), col - 5,
-									2) == 0)
+									0) == 0)
 								JOptionPane.showMessageDialog(null, "DB오류");
 							else
 								atp.getScoreTable().setValueAt(0, row, col);

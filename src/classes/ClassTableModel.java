@@ -25,7 +25,6 @@ public class ClassTableModel extends AbstractTableModel {
 		ranks = new int[objectsData.size()];
 		totals = new int[objectsData.size()];
 		grades = new String[objectsData.size()];
-	//	grades[0] = null; // Column °¹¼ö Ã¼Å©¿ë
 	}
 
 	@Override

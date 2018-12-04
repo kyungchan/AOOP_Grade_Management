@@ -1,15 +1,12 @@
 package classes;
 
 abstract class Student {
-	protected String name;
-	protected String stuNumber;
-	protected int stuGrade;
+	private String name;
+	private String stuNumber;
+	private int stuGrade;
 
 	abstract int getTotalScore(Ratio ratio);
 
-	public Student() {
-	}
-	
 	public Student(String name, String stuNumber, int stuGrade) {
 		setName(name);
 		setStuNumber(stuNumber);
