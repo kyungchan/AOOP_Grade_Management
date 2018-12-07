@@ -19,9 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.event.RowSorterEvent;
-import javax.swing.event.RowSorterListener;
-import javax.swing.table.JTableHeader;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 
 import classes.Attand;
@@ -66,17 +65,17 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 		mtp = new MainTablePanel(coursesModel);
 		mtp.scoreTable.addMouseListener(new MouseAdapter() {
-		    public void mousePressed(MouseEvent mouseEvent) {
-		        JTable table =(JTable) mouseEvent.getSource();
-		        Point point = mouseEvent.getPoint();
-		        int row = table.rowAtPoint(point);
-		        int col = table.columnAtPoint(point);
-		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && col == 3) {
-		        	new AttandManager(attandsModel, attandsQueries, (String)mtp.scoreTable.getValueAt(row, 0));
-		        }
-		    }
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				int col = table.columnAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && col == 3) {
+					new AttandManager(attandsModel, attandsQueries, (String) mtp.scoreTable.getValueAt(row, 0));
+				}
+			}
 		});
-		
+
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu("파일");
 		menuItem = new JMenuItem("불러오기");
@@ -116,7 +115,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBarBtn.addActionListener(this);
 		toolBar.add(toolBarBtn);
 
-		toolBarBtn =  new JButton(new ImageIcon("images/icon_save.png"));
+		toolBarBtn = new JButton(new ImageIcon("images/icon_save.png"));
 		toolBarBtn.setActionCommand("save");
 		toolBarBtn.addActionListener(this);
 		toolBar.add(toolBarBtn);
@@ -135,6 +134,23 @@ public class ScoreManager extends JFrame implements ActionListener {
 		add(mtp, BorderLayout.CENTER);
 
 		updateAvg();
+		mtp.getTableModel().addTableModelListener(new TableModelListener() {
+
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				int row = e.getFirstRow();
+				int col = e.getColumn();
+				if (row != 0) {
+					String stuNum = (String) mtp.getTableModel().getValueAt(row, 0);
+					if (coursesQueries.updateScore(stuNum, col - 3,
+							(int) mtp.getTableModel().getValueAt(row, col)) != 1) {
+						JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				//
+			}
+
+		});
 
 		this.setTitle("성적관리");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -247,13 +263,13 @@ public class ScoreManager extends JFrame implements ActionListener {
 			addRankCol();
 			addGradeCol();
 			flagTotalCol = true;
-			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.");
+			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.\n성적 변경시 다시 등급산출을 해주세요.","성적관리", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case "그래프작성":
-			if(flagTotalCol)
+			if (flagTotalCol)
 				new GraphTablePanel(courses, ratio, addGradeNum());
-			else 
-				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.");
+			else
+				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.", "성적관리", JOptionPane.WARNING_MESSAGE);
 			break;
 		case "설정":
 			break;

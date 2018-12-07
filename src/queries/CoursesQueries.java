@@ -11,11 +11,11 @@ import java.util.List;
 import classes.Course;
 
 public class CoursesQueries {
-	static final String COURSES_QUERY = "SELECT * FROM students NATURAL JOIN courses;";
 
+	static public String[] COL_NAME = { "ScoreAttand", "scoreMid", "scoreFinal", "scoreHomework",
+			"scoreQuiz", "scorePPT", "scoreReport", "scoreEtc" };
 	private Connection connection = null;
 	private PreparedStatement selectAllCourse = null;
-	private PreparedStatement selectStudentByStuNumber = null;
 	private PreparedStatement updateScoreByStuNumber = null;
 
 	public CoursesQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
@@ -23,8 +23,6 @@ public class CoursesQueries {
 			connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 
 			selectAllCourse = connection.prepareStatement("SELECT * FROM students NATURAL JOIN courses;");
-			selectStudentByStuNumber = connection
-					.prepareStatement("SELECT * FROM students NATURAL JOIN courses WHERER studentNum = ?;");
 			updateScoreByStuNumber = connection.prepareStatement("UPDATE courses SET ? = ? WHERE studentNum = ?;");
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
@@ -32,12 +30,14 @@ public class CoursesQueries {
 		}
 	}
 
-	public int updateScore(String studentNumber, String colName, int value) {
+	public int updateScore(String studentNumber, int colNum, int value) {
 		int result = 0;
 		try {
-			updateScoreByStuNumber.setString(1, studentNumber);
-			updateScoreByStuNumber.setString(2, colName);
-			updateScoreByStuNumber.setInt(3, value);
+			updateScoreByStuNumber = connection
+					.prepareStatement("UPDATE courses SET " + COL_NAME[colNum] + " = ? WHERE studentNum = ?");
+			updateScoreByStuNumber.setInt(1, value);
+			updateScoreByStuNumber.setString(2, studentNumber);
+			System.out.println(updateScoreByStuNumber);
 			result = updateScoreByStuNumber.executeUpdate();
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();

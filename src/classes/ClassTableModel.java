@@ -53,6 +53,12 @@ public class ClassTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int column) {
 		if (objectsData.get(row) instanceof Course) {
+			if (value instanceof Integer) {
+				if ((int) value > 100 || (int) value < 0 && column >= 2 && column <= 10) {
+					JOptionPane.showMessageDialog(null, "점수는 0에서 100사이만 가능합니다.", "성적관리", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
 			switch (column) {
 			case 0:
 				((Course) objectsData.get(row)).setStuNumber((String) value);
@@ -97,6 +103,9 @@ public class ClassTableModel extends AbstractTableModel {
 				grades[row] = (String) value;
 				break;
 			}
+			if(column <= 10) {
+				fireTableCellUpdated(row, column);
+			}
 		} else if (objectsData.get(row) instanceof Attand) {
 			if (column < 3) {
 				switch (column) {
@@ -114,9 +123,9 @@ public class ClassTableModel extends AbstractTableModel {
 				System.out.println(row + "." + column);
 				((Attand) objectsData.get(row)).setAttand(column - 6, (Integer) value);
 			}
+			fireTableCellUpdated(row, column);
 		}
 		fireTableDataChanged();
-		super.setValueAt(value, row, column);
 	}
 
 	public void addRow(Student student) {
