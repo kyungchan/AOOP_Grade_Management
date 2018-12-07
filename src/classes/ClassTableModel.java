@@ -29,9 +29,7 @@ public class ClassTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if (row == getRowCount() - 1)
-			return false;
-		else if (column < 4)
+		if (column < 4)
 			return false;
 		else if (column > 10)
 			return false;

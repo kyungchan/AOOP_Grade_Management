@@ -1,6 +1,8 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +14,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -21,6 +24,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import classes.Attand;
@@ -38,6 +42,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 	private Ratio ratio;
 	private Grade grade;
+	private JLabel avgLabel;
 	private MainTablePanel mtp;
 	private List<Course> courses;
 	private List<Attand> attands;
@@ -51,7 +56,6 @@ public class ScoreManager extends JFrame implements ActionListener {
 		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
 		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
-		courses.add(new Course("평균", "", 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		attands = attandsQueries.getAllAttands();
 
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
@@ -133,7 +137,6 @@ public class ScoreManager extends JFrame implements ActionListener {
 		add(toolBar, BorderLayout.NORTH);
 		add(mtp, BorderLayout.CENTER);
 
-		updateAvg();
 		mtp.getTableModel().addTableModelListener(new TableModelListener() {
 
 			@Override
@@ -146,12 +149,17 @@ public class ScoreManager extends JFrame implements ActionListener {
 							(int) mtp.getTableModel().getValueAt(row, col)) != 1) {
 						JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
 					}
+					updateAvg();
 				}
 				//
 			}
 
 		});
+		// renewAttandCol();
+		avgLabel = new JLabel("가나다");
+		add(avgLabel, BorderLayout.SOUTH);
 
+		updateAvg();
 		this.setTitle("성적관리");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
@@ -166,13 +174,17 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 	public void updateAvg() {
 		int sum = 0;
+		List<Integer> avgList = new ArrayList<>();
 		for (int i = 3; i < 11; i++) {
-			for (int j = 0; j < courses.size() - 1; j++) {
+			for (int j = 0; j < courses.size(); j++) {
 				sum += (int) mtp.scoreTable.getValueAt(j, i);
 			}
-			mtp.scoreTable.setValueAt((int) sum / (courses.size() - 1), courses.size() - 1, i);
+			avgList.add((int) sum / (courses.size()));
 			sum = 0;
 		}
+		avgLabel.setText(" (평균) 출결: " + avgList.get(0) + " | 중간: " + avgList.get(1) + " | 기말: " + avgList.get(2) + " | 과제: "
+				+ avgList.get(3) + " | 퀴즈: " + avgList.get(4) + " | 발표: " + avgList.get(5) + " | 보고서: " + avgList.get(6)
+				+ " | 기타: " + avgList.get(7));
 	}
 
 	public void addTotalCol() {
@@ -188,8 +200,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 	}
 
 	public void addRankCol() {
-		int ranking[] = new int[courses.size() - 1];
-		int total[] = new int[courses.size() - 1];
+		int ranking[] = new int[courses.size()];
+		int total[] = new int[courses.size()];
 		if (!flagTotalCol) {
 			TableColumn column = new TableColumn(12);
 			column.setHeaderValue("석차");
@@ -197,18 +209,33 @@ public class ScoreManager extends JFrame implements ActionListener {
 			column.setCellRenderer(mtp.getFixCellCenter());
 			mtp.scoreTable.addColumn(column);
 		}
-		for (int i = 0; i < courses.size() - 1; i++) {
+		for (int i = 0; i < courses.size(); i++) {
 			ranking[i] = 1;
 			total[i] = (int) mtp.scoreTable.getValueAt(i, 11);
 		}
-		for (int i = 0; i < courses.size() - 1; i++)
-			for (int j = 0; j < courses.size() - 1; j++)
+		for (int i = 0; i < courses.size(); i++)
+			for (int j = 0; j < courses.size(); j++)
 				if (total[i] < total[j])
 					ranking[i]++;
-		for (int i = 0; i < courses.size() - 1; i++)
+		for (int i = 0; i < courses.size(); i++)
 			mtp.scoreTable.setValueAt(ranking[i], i, 12);
 
 	}
+
+	public void renewAttandCol() {
+		// for (int i = 0; i < mtp.getTableModel().getRowCount(); i++) {
+		// if ((Integer)mtp.scoreTable.getValueAt(i, 3) <= 70) {
+		mtp.scoreTable.getColumn("출결(10%)").setCellRenderer(new TableCellRenderer() {
+
+			@Override
+			public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3,
+					int arg4, int arg5) {
+
+				return null;
+			}
+		});
+	}
+	// }
 
 	public void addGradeCol() {
 		if (!flagTotalCol) {
@@ -221,10 +248,10 @@ public class ScoreManager extends JFrame implements ActionListener {
 		int[] ratios = grade.getAllRatio();
 		String[] gradeString = { "A+", "A0", "B+", "B0", "C+", "C0", "D", "F" };
 		int ratioSum;
-		for (int i = 0; i < courses.size() - 1; i++) {
+		for (int i = 0; i < courses.size(); i++) {
 			ratioSum = 0;
 			for (int j = 0; j < ratios.length; j++) {
-				if ((int) mtp.scoreTable.getValueAt(i, 12) <= (ratioSum + ratios[j]) * (courses.size() - 1) / 100) {
+				if ((int) mtp.scoreTable.getValueAt(i, 12) <= (ratioSum + ratios[j]) * (courses.size()) / 100) {
 					mtp.scoreTable.setValueAt(gradeString[j], i, 13);
 					break;
 				} else {
@@ -263,7 +290,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 			addRankCol();
 			addGradeCol();
 			flagTotalCol = true;
-			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.\n성적 변경시 다시 등급산출을 해주세요.","성적관리", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "등급산출을 완료했습니다.\n성적 변경시 다시 등급산출을 해주세요.", "성적관리",
+					JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case "그래프작성":
 			if (flagTotalCol)
