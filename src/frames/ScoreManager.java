@@ -62,7 +62,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
-		
+
 		ratio = ratioQueries.getRatio();
 		grade = ratioQueries.getGrade();
 
@@ -78,7 +78,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				int row = table.rowAtPoint(point);
 				int col = table.columnAtPoint(point);
 				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && col == 3) {
-					new AttandManager(attandsModel, attandsQueries, coursesQueries,
+					new AttandManager(attandsModel, coursesModel, attandsQueries, coursesQueries,
 							courses.get(mtp.getSorter().convertRowIndexToModel(row)).getStuNumber());
 				}
 			}
@@ -134,7 +134,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBar.add(toolBarBtn);
 
 		toolBarBtn = new JButton(new ImageIcon("images/icon_setting.png"));
-		toolBarBtn.setActionCommand("setting");
+		toolBarBtn.setActionCommand("설정");
 		toolBarBtn.addActionListener(this);
 		toolBar.add(toolBarBtn);
 
@@ -287,7 +287,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				System.exit(1);
 			break;
 		case "출결관리":
-			new AttandManager(attandsModel, attandsQueries, coursesQueries, null);
+			new AttandManager(attandsModel, coursesModel, attandsQueries, coursesQueries, null);
 			mtp.scoreTable.repaint();
 			break;
 		case "등급산출":
@@ -305,6 +305,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.", "성적관리", JOptionPane.WARNING_MESSAGE);
 			break;
 		case "설정":
+			new SettingManager(ratio, grade, ratioQueries);
 			break;
 		}
 	}

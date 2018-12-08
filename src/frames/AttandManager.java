@@ -21,13 +21,16 @@ public class AttandManager extends JDialog implements ActionListener {
 	private AttandTablePanel atp;
 	private AttandsQueries attandsQueries;
 	private CoursesQueries coursesQueries;
-	private ClassTableModel tableModel;
-	
-	public AttandManager(ClassTableModel tableModel, AttandsQueries attandsQueries, CoursesQueries coursesQueries, String studentNum) {
-		this.tableModel = tableModel;
+	private ClassTableModel attandsModel;
+	private ClassTableModel coursesModel;
+
+	public AttandManager(ClassTableModel tableModel, ClassTableModel coursesModel, AttandsQueries attandsQueries,
+			CoursesQueries coursesQueries, String studentNum) {
+		this.attandsModel = tableModel;
+		this.coursesModel = coursesModel;
 		this.attandsQueries = attandsQueries;
 		this.coursesQueries = coursesQueries;
-		
+
 		atp = new AttandTablePanel(tableModel);
 		JToolBar toolBar = new JToolBar();
 		JButton toolBarBtn;
@@ -74,11 +77,13 @@ public class AttandManager extends JDialog implements ActionListener {
 		late %= 3;
 
 		total = 100 - miss * 10 - late * 3;
-		tableModel.setValueAt(total, row, 3);
-		
+		attandsModel.setValueAt(total, row, 3);
+
 		if (coursesQueries.updateScore(stuNum, 0, total) != 1) {
 			JOptionPane.showMessageDialog(null, "DB坷幅惯积", "己利包府", JOptionPane.ERROR_MESSAGE);
 		}
+		System.out.println(attandsModel.getValueAt(row, 3));
+		coursesModel.setValueAt(total, row, 3);
 	}
 
 	@Override
