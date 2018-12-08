@@ -15,7 +15,7 @@ public class SettingQueries {
 	private PreparedStatement updateSetting = null;
 	private String colName[] = { "ratioAttand", "ratioMid", "ratioFinal", "ratioHomework", "ratioQuiz", "ratioPPT",
 			"ratioReport", "ratioEtc", "ratioAP", "ratioA0", "ratioBP", "ratioB0", "ratioCP", "ratioC0", "ratioD",
-			"ratioD", "privacy"};
+			"ratioF", "privacy"};
 
 	public SettingQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
 		try {
@@ -50,8 +50,6 @@ public class SettingQueries {
 
 			ratio = new Ratio(result.getInt(2), result.getInt(3), result.getInt(4), result.getInt(5), result.getInt(6),
 					result.getInt(7), result.getInt(8), result.getInt(9));
-			System.out.println("" + result.getInt(2) + result.getInt(3) + result.getInt(4) + result.getInt(5)
-					+ result.getInt(6) + result.getInt(7) + result.getInt(8) + result.getInt(9));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			close();
@@ -68,8 +66,6 @@ public class SettingQueries {
 
 			grade = new Grade(result.getInt(10), result.getInt(11), result.getInt(12), result.getInt(13),
 					result.getInt(14), result.getInt(15), result.getInt(16), result.getInt(17));
-			System.out.println("" + result.getInt(10) + result.getInt(11) + result.getInt(12) + result.getInt(13)
-					+ result.getInt(14) + result.getInt(15) + result.getInt(16) + result.getInt(17));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			close();

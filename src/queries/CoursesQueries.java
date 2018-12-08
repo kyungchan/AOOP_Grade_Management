@@ -37,7 +37,6 @@ public class CoursesQueries {
 					.prepareStatement("UPDATE courses SET " + COL_NAME[colNum] + " = ? WHERE studentNum = ?");
 			updateScoreByStuNumber.setInt(1, value);
 			updateScoreByStuNumber.setString(2, studentNumber);
-			System.out.println(updateScoreByStuNumber);
 			result = updateScoreByStuNumber.executeUpdate();
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
