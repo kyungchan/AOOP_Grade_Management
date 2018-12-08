@@ -40,6 +40,7 @@ public class Attand extends Student {
 	
 	public void setAttand(int week, int status) {
 		StringBuilder builder = new StringBuilder(this.serialAttand);
+		System.out.println("week" + week);
 		builder.setCharAt(week, (char)(status + 48));
 		setSerialAttand(builder.toString());
 	}

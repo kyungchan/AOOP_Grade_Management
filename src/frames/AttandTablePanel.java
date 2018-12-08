@@ -13,7 +13,7 @@ import classes.ClassTableModel;
 
 public class AttandTablePanel extends JPanel {
 	private ClassTableModel attandModel;
-	private JTable scoreTable;
+	protected JTable scoreTable;
 
 	public AttandTablePanel(ClassTableModel attandModel) {
 		String[] columnNames = { "학번", "학년", "학생이름", "출석", "지각", "결석", "1주-1", "1주-2", "2주-1", "2주-2", "3주-1", "3주-2",

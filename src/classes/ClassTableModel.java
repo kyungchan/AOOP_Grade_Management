@@ -105,7 +105,7 @@ public class ClassTableModel extends AbstractTableModel {
 				fireTableCellUpdated(row, column);
 			}
 		} else if (objectsData.get(row) instanceof Attand) {
-			if (column < 3) {
+			if (column < 4) {
 				switch (column) {
 				case 0:
 					((Attand) objectsData.get(row)).setStuNumber((String) value);
@@ -165,11 +165,19 @@ public class ClassTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int column) throws IllegalStateException {
 		if (objectsData.get(row) instanceof Course) {
+			StringBuilder sb;
 			switch (column) {
 			case 0:
-				return ((Course) objectsData.get(row)).getStuNumber();
+				sb = new StringBuilder(((Course) objectsData.get(row)).getStuNumber());
+				sb.setCharAt(4, '*');
+				sb.setCharAt(5, '*');
+				sb.setCharAt(6, '*');
+				sb.setCharAt(7, '*');
+				return sb.toString();
 			case 1:
-				return ((Course) objectsData.get(row)).getName();
+				sb = new StringBuilder(((Course) objectsData.get(row)).getName());
+				sb.setCharAt(1, '*');
+				return sb.toString();
 			case 2:
 				return ((Course) objectsData.get(row)).getStuGrade();
 			case 3:

@@ -24,9 +24,14 @@ public class MainTablePanel extends JPanel {
 			"발표(10%)", "보고서(10%)", "기타(10%)" };
 
 	private DefaultTableCellRenderer getFixCellCenter = new DefaultTableCellRenderer();
+	private TableRowSorter<ClassTableModel> sorter;
 
 	public void setTableModel(ClassTableModel tableModel) {
 		this.tableModel = tableModel;
+	}
+
+	public TableRowSorter<ClassTableModel> getSorter() {
+		return sorter;
 	}
 
 	public MainTablePanel(ClassTableModel tableModel) {
@@ -46,7 +51,8 @@ public class MainTablePanel extends JPanel {
 		scoreTable.getColumn(columnNames[2]).setPreferredWidth(30);
 		scoreTable.getColumn(columnNames[2]).setCellRenderer(getFixCellCenter);
 		scoreTable.setCellSelectionEnabled(true);
-		scoreTable.setRowSorter(new TableRowSorter(tableModel));
+		sorter = new TableRowSorter(tableModel);
+		scoreTable.setRowSorter(sorter);
 
 		setLayout(new GridLayout(1, 0));
 		add(scrollPane);

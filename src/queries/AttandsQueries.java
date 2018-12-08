@@ -38,7 +38,6 @@ public class AttandsQueries {
 			updateAttandByStuNumber.setInt(1, value);
 			updateAttandByStuNumber.setString(2, studentNumber);
 			result = updateAttandByStuNumber.executeUpdate();
-			System.out.println(":UPDATE attands SET " + colName[col] + " = " + value + " WHERE studentNum = " + studentNumber);
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			close();

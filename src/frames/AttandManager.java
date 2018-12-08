@@ -13,14 +13,21 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import classes.ClassTableModel;
+import classes.Course;
 import queries.AttandsQueries;
+import queries.CoursesQueries;
 
 public class AttandManager extends JDialog implements ActionListener {
 	private AttandTablePanel atp;
 	private AttandsQueries attandsQueries;
-
-	public AttandManager(ClassTableModel tableModel, AttandsQueries attandsQueries, String studentNum) {
+	private CoursesQueries coursesQueries;
+	private ClassTableModel tableModel;
+	
+	public AttandManager(ClassTableModel tableModel, AttandsQueries attandsQueries, CoursesQueries coursesQueries, String studentNum) {
+		this.tableModel = tableModel;
 		this.attandsQueries = attandsQueries;
+		this.coursesQueries = coursesQueries;
+		
 		atp = new AttandTablePanel(tableModel);
 		JToolBar toolBar = new JToolBar();
 		JButton toolBarBtn;
@@ -58,6 +65,22 @@ public class AttandManager extends JDialog implements ActionListener {
 		this.setVisible(true);
 	}
 
+	public void calTotal(int row) {
+		String stuNum = (String) atp.scoreTable.getValueAt(row, 0);
+		int late = (int) atp.scoreTable.getValueAt(row, 4);
+		int miss = (int) atp.scoreTable.getValueAt(row, 5);
+		int total;
+		miss += late / 3;
+		late %= 3;
+
+		total = 100 - miss * 10 - late * 3;
+		tableModel.setValueAt(total, row, 3);
+		
+		if (coursesQueries.updateScore(stuNum, 0, total) != 1) {
+			JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int selectedCols[] = atp.getScoreTable().getSelectedColumns();
@@ -71,9 +94,11 @@ public class AttandManager extends JDialog implements ActionListener {
 						if (col > 5)
 							if (attandsQueries.updateAttand((String) atp.getScoreTable().getValueAt(row, 0), col - 5,
 									2) == 0)
-								JOptionPane.showMessageDialog(null, "DB오류");
-							else
+								JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
+							else {
 								atp.getScoreTable().setValueAt(2, row, col);
+								calTotal(row);
+							}
 				break;
 			case "late":
 				for (int row : selectedRows)
@@ -81,9 +106,11 @@ public class AttandManager extends JDialog implements ActionListener {
 						if (col > 5)
 							if (attandsQueries.updateAttand((String) atp.getScoreTable().getValueAt(row, 0), col - 5,
 									1) == 0)
-								JOptionPane.showMessageDialog(null, "DB오류");
-							else
+								JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
+							else {
 								atp.getScoreTable().setValueAt(1, row, col);
+								calTotal(row);
+							}
 				break;
 			case "miss":
 				for (int row : selectedRows)
@@ -91,15 +118,17 @@ public class AttandManager extends JDialog implements ActionListener {
 						if (col > 5)
 							if (attandsQueries.updateAttand((String) atp.getScoreTable().getValueAt(row, 0), col - 5,
 									0) == 0)
-								JOptionPane.showMessageDialog(null, "DB오류");
-							else
+								JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
+							else {
 								atp.getScoreTable().setValueAt(0, row, col);
+								calTotal(row);
+							}
 				break;
 			}
 		} else
 
 		{
-			JOptionPane.showMessageDialog(null, "변경할 항목을 선택하지 않았습니다.");
+			JOptionPane.showMessageDialog(null, "변경할 항목을 선택하지 않았습니다.", "성적관리", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 }

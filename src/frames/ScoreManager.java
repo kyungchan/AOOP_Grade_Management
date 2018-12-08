@@ -1,7 +1,6 @@
 package frames;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -34,6 +33,7 @@ import classes.Grade;
 import classes.Ratio;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
+import queries.RatioQueries;
 
 public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
@@ -48,6 +48,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 	private List<Attand> attands;
 	private CoursesQueries coursesQueries;
 	private AttandsQueries attandsQueries;
+	private RatioQueries ratioQueries;
 	private ClassTableModel coursesModel;
 	private ClassTableModel attandsModel;
 	private Boolean flagTotalCol = false;
@@ -55,14 +56,15 @@ public class ScoreManager extends JFrame implements ActionListener {
 	public ScoreManager() {
 		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
 		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
+		ratioQueries = new RatioQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
 		attands = attandsQueries.getAllAttands();
 
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
-
-		ratio = new Ratio(10, 15, 15, 20, 10, 10, 10, 10, 3);
-		grade = new Grade(10, 15, 15, 15, 15, 15, 10, 5);
+		
+		ratio = ratioQueries.getRatio();
+		grade = ratioQueries.getGrade();
 
 		JMenuItem menuItem;
 		KeyStroke key;
@@ -72,10 +74,12 @@ public class ScoreManager extends JFrame implements ActionListener {
 			public void mousePressed(MouseEvent mouseEvent) {
 				JTable table = (JTable) mouseEvent.getSource();
 				Point point = mouseEvent.getPoint();
+				System.out.println(table.getSelectedRow());
 				int row = table.rowAtPoint(point);
 				int col = table.columnAtPoint(point);
 				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && col == 3) {
-					new AttandManager(attandsModel, attandsQueries, (String) mtp.scoreTable.getValueAt(row, 0));
+					new AttandManager(attandsModel, attandsQueries, coursesQueries,
+							courses.get(mtp.getSorter().convertRowIndexToModel(row)).getStuNumber());
 				}
 			}
 		});
@@ -144,7 +148,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				int row = e.getFirstRow();
 				int col = e.getColumn();
 				if (row != 0) {
-					String stuNum = (String) mtp.getTableModel().getValueAt(row, 0);
+					String stuNum = courses.get(row).getStuNumber();
 					if (coursesQueries.updateScore(stuNum, col - 3,
 							(int) mtp.getTableModel().getValueAt(row, col)) != 1) {
 						JOptionPane.showMessageDialog(null, "DB오류발생", "성적관리", JOptionPane.ERROR_MESSAGE);
@@ -182,9 +186,9 @@ public class ScoreManager extends JFrame implements ActionListener {
 			avgList.add((int) sum / (courses.size()));
 			sum = 0;
 		}
-		avgLabel.setText(" (평균) 출결: " + avgList.get(0) + " | 중간: " + avgList.get(1) + " | 기말: " + avgList.get(2) + " | 과제: "
-				+ avgList.get(3) + " | 퀴즈: " + avgList.get(4) + " | 발표: " + avgList.get(5) + " | 보고서: " + avgList.get(6)
-				+ " | 기타: " + avgList.get(7));
+		avgLabel.setText(" (평균) 출결: " + avgList.get(0) + " | 중간: " + avgList.get(1) + " | 기말: " + avgList.get(2)
+				+ " | 과제: " + avgList.get(3) + " | 퀴즈: " + avgList.get(4) + " | 발표: " + avgList.get(5) + " | 보고서: "
+				+ avgList.get(6) + " | 기타: " + avgList.get(7));
 	}
 
 	public void addTotalCol() {
@@ -283,7 +287,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 				System.exit(1);
 			break;
 		case "출결관리":
-			new AttandManager(attandsModel, attandsQueries, null);
+			new AttandManager(attandsModel, attandsQueries, coursesQueries, null);
+			mtp.scoreTable.repaint();
 			break;
 		case "등급산출":
 			addTotalCol();

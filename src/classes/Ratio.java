@@ -9,10 +9,9 @@ public class Ratio {
 	private int ratioPPT;
 	private int ratioReport;
 	private int ratioEtc;
-	private int ratioLateMiss;
 
 	public Ratio(int ratioAttand, int ratioMid, int ratioFinal, int ratioHomework, int ratioQuiz, int ratioPPT,
-			int ratioReport, int ratioEtc, int ratioLateMiss) {
+			int ratioReport, int ratioEtc) {
 		this.ratioAttand = ratioAttand;
 		this.ratioMid = ratioMid;
 		this.ratioFinal = ratioFinal;
@@ -21,7 +20,6 @@ public class Ratio {
 		this.ratioPPT = ratioPPT;
 		this.ratioReport = ratioReport;
 		this.ratioEtc = ratioEtc;
-		this.ratioLateMiss = ratioLateMiss;
 	}
 
 	public int getRatioAttand() {
@@ -87,13 +85,4 @@ public class Ratio {
 	public void setRatioEtc(int ratioEtc) {
 		this.ratioEtc = ratioEtc;
 	}
-
-	public int getRatioLateMiss() {
-		return ratioLateMiss;
-	}
-
-	public void setRatioLateMiss(int ratioLateMiss) {
-		this.ratioLateMiss = ratioLateMiss;
-	}
-
 }
