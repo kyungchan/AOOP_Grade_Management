@@ -1,21 +1,23 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import classes.ClassTableModel;
-import classes.Course;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
+
 
 public class AttandManager extends JDialog implements ActionListener {
 	private AttandTablePanel atp;
@@ -30,7 +32,6 @@ public class AttandManager extends JDialog implements ActionListener {
 		this.coursesModel = coursesModel;
 		this.attandsQueries = attandsQueries;
 		this.coursesQueries = coursesQueries;
-
 		atp = new AttandTablePanel(tableModel);
 		JToolBar toolBar = new JToolBar();
 		JButton toolBarBtn;
@@ -61,7 +62,6 @@ public class AttandManager extends JDialog implements ActionListener {
 				}
 			}
 		}
-
 		this.setTitle("출결관리");
 		this.pack();
 		this.setModal(true);
@@ -84,6 +84,25 @@ public class AttandManager extends JDialog implements ActionListener {
 		}
 		System.out.println(attandsModel.getValueAt(row, 3));
 		coursesModel.setValueAt(total, row, 3);
+	}
+
+	public void warningRow() {
+		int late;
+		int miss;
+		int total = 0;
+
+		for (int i = 0; i < attandsModel.getRowCount(); i++) {
+			late = (int) atp.scoreTable.getValueAt(i, 4);
+			miss = (int) atp.scoreTable.getValueAt(i, 5);
+
+			miss += late / 3;
+			late %= 3;
+			total = 100 - miss * 10 - late * 3;
+			if (total < 70) {
+				DefaultTableCellRenderer warining = new DefaultTableCellRenderer();
+				atp.scoreTable.getComponentAt(i, 0).setBackground(Color.RED);
+			}
+		}
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -29,15 +30,26 @@ public class AttandTablePanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(scoreTable);
 
 		DefaultTableCellRenderer celAlignCenter = new DefaultTableCellRenderer();
+		DefaultTableCellRenderer celColor = new DefaultTableCellRenderer();
+		
+		celColor.setBackground(Color.decode("#F2F2F2"));
+		celColor.setHorizontalAlignment(JLabel.CENTER);
 		celAlignCenter.setHorizontalAlignment(JLabel.CENTER);
-		for (int i = 0; i < 38; i++) {
+		
+		for (int i = 3; i < 38; i++) {
 			scoreTable.getColumn(columnNames[i]).setPreferredWidth(45);
 			scoreTable.getColumn(columnNames[i]).setCellRenderer(celAlignCenter);
 		}
 
 		scoreTable.getColumn(columnNames[0]).setPreferredWidth(70);
+		scoreTable.getColumn(columnNames[0]).setCellRenderer(celColor);
 		scoreTable.getColumn(columnNames[1]).setPreferredWidth(30);
+		scoreTable.getColumn(columnNames[1]).setCellRenderer(celColor);
 		scoreTable.getColumn(columnNames[2]).setPreferredWidth(60);
+		scoreTable.getColumn(columnNames[2]).setCellRenderer(celColor);
+		scoreTable.getColumn(columnNames[3]).setCellRenderer(celColor);
+		scoreTable.getColumn(columnNames[4]).setCellRenderer(celColor);
+		scoreTable.getColumn(columnNames[5]).setCellRenderer(celColor);
 		scrollPane.setPreferredSize(new Dimension(900, 500));
 		scoreTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scoreTable.setCellSelectionEnabled(true);

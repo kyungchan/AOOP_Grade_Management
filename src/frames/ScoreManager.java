@@ -1,6 +1,7 @@
 package frames;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -38,6 +40,10 @@ import classes.Ratio;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
 import queries.SettingQueries;
+
+class CustomTableCellRenderer extends DefaultTableCellRenderer {
+
+}
 
 public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
@@ -173,7 +179,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 			}
 
 		});
-		// renewAttandCol();
+		renewAttandCol();
 		avgLabel = new JLabel("가나다");
 		add(avgLabel, BorderLayout.SOUTH);
 
@@ -241,15 +247,15 @@ public class ScoreManager extends JFrame implements ActionListener {
 	}
 
 	public void renewAttandCol() {
-		// for (int i = 0; i < mtp.getTableModel().getRowCount(); i++) {
-		// if ((Integer)mtp.scoreTable.getValueAt(i, 3) <= 70) {
-		mtp.scoreTable.getColumn("출결(10%)").setCellRenderer(new TableCellRenderer() {
-
+		mtp.scoreTable.setDefaultRenderer(Integer.class, new DefaultTableCellRenderer() {
 			@Override
-			public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3,
-					int arg4, int arg5) {
-
-				return null;
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				if (column == 3) {
+					c.setBackground(((int) value) > 70 ? Color.WHITE : Color.decode("#ffcccc"));
+				}
+				return c;
 			}
 		});
 	}
@@ -321,7 +327,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 			String keyword = JOptionPane.showInputDialog("검색할 학번을 입력하세요", "검색");
 			for (int i = 0; i < courses.size(); i++) {
 				if (courses.get(i).getStuNumber().equals(keyword)) {
-					mtp.scoreTable.changeSelection( mtp.getSorter().convertRowIndexToView(i), 0, false, false);
+					mtp.scoreTable.changeSelection(mtp.getSorter().convertRowIndexToView(i), 0, false, false);
 					break;
 				}
 				if (i == courses.size() - 1)
