@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import classes.Attand;
@@ -37,6 +35,7 @@ import classes.ClassTableModel;
 import classes.Course;
 import classes.Grade;
 import classes.Ratio;
+import classes.csvIO;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
 import queries.SettingQueries;
@@ -49,7 +48,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
-
+	
+	private csvIO csvManager;
 	private Ratio ratio;
 	private Grade grade;
 	private JLabel avgLabel;
@@ -139,7 +139,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBar.add(toolBarBtn);
 
 		toolBarBtn = new JButton(new ImageIcon("images/icon_save.png"));
-		toolBarBtn.setActionCommand("save");
+		toolBarBtn.setActionCommand("내보내기");
 		toolBarBtn.addActionListener(this);
 		toolBar.add(toolBarBtn);
 
@@ -180,6 +180,8 @@ public class ScoreManager extends JFrame implements ActionListener {
 
 		});
 		renewAttandCol();
+		csvManager = new csvIO(courses, attands);
+		
 		avgLabel = new JLabel("가나다");
 		add(avgLabel, BorderLayout.SOUTH);
 
@@ -300,6 +302,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 			System.out.println("ㅂㄹㅇㄱ");
 			break;
 		case "내보내기":
+			csvManager.out();
 			break;
 		case "종료":
 			if (JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "성적관리자",

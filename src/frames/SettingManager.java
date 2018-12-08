@@ -141,7 +141,7 @@ public class SettingManager extends JDialog implements ActionListener, FocusList
 		label.setHorizontalAlignment(JLabel.CENTER);
 		add(label);
 		add(textBP);
-		label = new JLabel("B+배정비율 :");
+		label = new JLabel("B0배정비율 :");
 		label.setHorizontalAlignment(JLabel.CENTER);
 		add(label);
 		add(textB0);
