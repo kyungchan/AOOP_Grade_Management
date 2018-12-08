@@ -142,6 +142,11 @@ public class ScoreManager extends JFrame implements ActionListener {
 		toolBarBtn.addActionListener(this);
 		toolBar.add(toolBarBtn);
 
+		toolBarBtn = new JButton(new ImageIcon("images/icon_search.png"));
+		toolBarBtn.setActionCommand("검색");
+		toolBarBtn.addActionListener(this);
+		toolBar.add(toolBarBtn);
+
 		toolBarBtn = new JButton(new ImageIcon("images/icon_setting.png"));
 		toolBarBtn.setActionCommand("설정");
 		toolBarBtn.addActionListener(this);
@@ -311,6 +316,17 @@ public class ScoreManager extends JFrame implements ActionListener {
 				new GraphTablePanel(courses, ratio, addGradeNum());
 			else
 				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.", "성적관리", JOptionPane.WARNING_MESSAGE);
+			break;
+		case "검색":
+			String keyword = JOptionPane.showInputDialog("검색할 학번을 입력하세요", "검색");
+			for (int i = 0; i < courses.size(); i++) {
+				if (courses.get(i).getStuNumber().equals(keyword)) {
+					mtp.scoreTable.changeSelection( mtp.getSorter().convertRowIndexToView(i), 0, false, false);
+					break;
+				}
+				if (i == courses.size() - 1)
+					JOptionPane.showMessageDialog(null, "해당 학생을 찾을 수 없습니다,", "성적관리", JOptionPane.ERROR_MESSAGE);
+			}
 			break;
 		case "설정":
 			JDialog sm = new SettingManager(ratio, grade, ratioQueries);
