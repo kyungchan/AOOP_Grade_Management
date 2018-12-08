@@ -9,15 +9,15 @@ import java.sql.SQLException;
 import classes.Grade;
 import classes.Ratio;
 
-public class RatioQueries {
+public class SettingQueries {
 	private Connection connection = null;
 	private PreparedStatement selectSetting = null;
 	private PreparedStatement updateSetting = null;
 	private String colName[] = { "ratioAttand", "ratioMid", "ratioFinal", "ratioHomework", "ratioQuiz", "ratioPPT",
 			"ratioReport", "ratioEtc", "ratioAP", "ratioA0", "ratioBP", "ratioB0", "ratioCP", "ratioC0", "ratioD",
-			"ratioD" };
+			"ratioD", "privacy"};
 
-	public RatioQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
+	public SettingQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
 		try {
 			connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 			selectSetting = connection.prepareStatement("SELECT * FROM setting WHERE num = 0");
@@ -25,6 +25,20 @@ public class RatioQueries {
 			sqlException.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public int getPrivacy() {
+		int privacy = 0;
+		try {
+			ResultSet result = selectSetting.executeQuery();
+			result.next();
+			privacy = result.getInt("privacy");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			close();
+		}
+		return privacy;
 	}
 
 	public Ratio getRatio() {
@@ -63,7 +77,7 @@ public class RatioQueries {
 		return grade;
 	}
 
-	public int updateAttand(int col, int value) {
+	public int updateSetting(int col, int value) {
 		int result = 0;
 		try {
 			updateSetting = connection.prepareStatement("UPDATE setting SET " + colName[col] + " = ? WHERE num = 0;");

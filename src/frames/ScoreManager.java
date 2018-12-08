@@ -7,11 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -33,7 +37,7 @@ import classes.Grade;
 import classes.Ratio;
 import queries.AttandsQueries;
 import queries.CoursesQueries;
-import queries.RatioQueries;
+import queries.SettingQueries;
 
 public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
@@ -48,7 +52,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 	private List<Attand> attands;
 	private CoursesQueries coursesQueries;
 	private AttandsQueries attandsQueries;
-	private RatioQueries ratioQueries;
+	private SettingQueries ratioQueries;
 	private ClassTableModel coursesModel;
 	private ClassTableModel attandsModel;
 	private Boolean flagTotalCol = false;
@@ -56,13 +60,17 @@ public class ScoreManager extends JFrame implements ActionListener {
 	public ScoreManager() {
 		coursesQueries = new CoursesQueries(DATABASE_URL, USERNAME, PASSWORD);
 		attandsQueries = new AttandsQueries(DATABASE_URL, USERNAME, PASSWORD);
-		ratioQueries = new RatioQueries(DATABASE_URL, USERNAME, PASSWORD);
+		ratioQueries = new SettingQueries(DATABASE_URL, USERNAME, PASSWORD);
 		courses = coursesQueries.getAllCourses();
 		attands = attandsQueries.getAllAttands();
 
 		coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
 		attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
 
+		if (ratioQueries.getPrivacy() == 1)
+			coursesModel.setPrivacy(true);
+		else
+			coursesModel.setPrivacy(false);
 		ratio = ratioQueries.getRatio();
 		grade = ratioQueries.getGrade();
 
@@ -83,6 +91,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 				}
 			}
 		});
+		mtp.updateColNames(ratio);
 
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu("파일");
@@ -288,7 +297,6 @@ public class ScoreManager extends JFrame implements ActionListener {
 			break;
 		case "출결관리":
 			new AttandManager(attandsModel, coursesModel, attandsQueries, coursesQueries, null);
-			mtp.scoreTable.repaint();
 			break;
 		case "등급산출":
 			addTotalCol();
@@ -305,7 +313,20 @@ public class ScoreManager extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "등급산출을 먼저 실행해주세요.", "성적관리", JOptionPane.WARNING_MESSAGE);
 			break;
 		case "설정":
-			new SettingManager(ratio, grade, ratioQueries);
+			JDialog sm = new SettingManager(ratio, grade, ratioQueries);
+			sm.addWindowListener(new WindowAdapter() {
+
+				@Override
+				public void windowClosed(WindowEvent arg0) {
+					if (ratioQueries.getPrivacy() == 1)
+						coursesModel.setPrivacy(true);
+					else
+						coursesModel.setPrivacy(false);
+					mtp.updateColNames(ratio);
+					super.windowClosed(arg0);
+				}
+
+			});
 			break;
 		}
 	}

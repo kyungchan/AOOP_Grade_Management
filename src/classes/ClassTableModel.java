@@ -19,12 +19,19 @@ public class ClassTableModel extends AbstractTableModel {
 	private int ranks[];
 	private int totals[];
 	private String grades[];
+	private boolean privacy;
 
 	public ClassTableModel(Object[] students) {
 		objectsData = new LinkedList<Student>(Arrays.asList((Student[]) students));
 		ranks = new int[objectsData.size()];
 		totals = new int[objectsData.size()];
 		grades = new String[objectsData.size()];
+		privacy = false;
+	}
+
+	public void setPrivacy(boolean privacy) {
+		this.privacy = privacy;
+		fireTableDataChanged();
 	}
 
 	@Override
@@ -101,7 +108,7 @@ public class ClassTableModel extends AbstractTableModel {
 				grades[row] = (String) value;
 				break;
 			}
-			if(column <= 10) {
+			if (column <= 10) {
 				fireTableCellUpdated(row, column);
 			}
 		} else if (objectsData.get(row) instanceof Attand) {
@@ -168,16 +175,25 @@ public class ClassTableModel extends AbstractTableModel {
 			StringBuilder sb;
 			switch (column) {
 			case 0:
-				sb = new StringBuilder(((Course) objectsData.get(row)).getStuNumber());
-				sb.setCharAt(4, '*');
-				sb.setCharAt(5, '*');
-				sb.setCharAt(6, '*');
-				sb.setCharAt(7, '*');
-				return sb.toString();
+				if (privacy) {
+					sb = new StringBuilder(((Course) objectsData.get(row)).getStuNumber());
+					sb.setCharAt(4, '*');
+					sb.setCharAt(5, '*');
+					sb.setCharAt(6, '*');
+					sb.setCharAt(7, '*');
+					return sb.toString();
+				} else {
+					return ((Course) objectsData.get(row)).getStuNumber();
+				}
+
 			case 1:
-				sb = new StringBuilder(((Course) objectsData.get(row)).getName());
-				sb.setCharAt(1, '*');
-				return sb.toString();
+				if (privacy) {
+					sb = new StringBuilder(((Course) objectsData.get(row)).getName());
+					sb.setCharAt(1, '*');
+					return sb.toString();
+				} else {
+					return ((Course) objectsData.get(row)).getName();
+				}
 			case 2:
 				return ((Course) objectsData.get(row)).getStuGrade();
 			case 3:
