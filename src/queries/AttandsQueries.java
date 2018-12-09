@@ -1,5 +1,6 @@
 package queries;
 
+import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +14,9 @@ import classes.Attand;
 public class AttandsQueries {
 	private Connection connection = null;
 	private PreparedStatement selectAllAttands = null;
+	private PreparedStatement insertStudent = null;
+	private PreparedStatement insertCourse = null;
+	private PreparedStatement insertAttand = null;
 	private PreparedStatement updateAttandByStuNumber = null;
 	private String colName[] = { "StudentNum", "Week1_1", "Week1_2", "Week2_1", "Week2_2", "Week3_1", "Week3_2",
 			"Week4_1", "Week4_2", "Week5_1", "Week5_2", "Week6_1", "Week6_2", "Week7_1", "Week7_2", "Week8_1",
@@ -22,11 +26,60 @@ public class AttandsQueries {
 	public AttandsQueries(String DATABASE_URL, String USERNAME, String PASSWORD) {
 		try {
 			connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
-
 			selectAllAttands = connection.prepareStatement("SELECT * FROM students NATURAL JOIN attands;");
+			insertStudent = connection.prepareStatement("INSERT INTO students VALUES(?, ?, ?);");
+			insertCourse = connection.prepareStatement("INSERT INTO courses VALUES(?,?,?,?,?,?,?,?,?);");
+			insertAttand = connection.prepareStatement(
+					"INSERT INTO attands VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 			System.exit(1);
+		}
+	}
+
+	public void insertAll(String stuName, String stuNumber, int stuGrade, int scoreAttand, int scoreMid, int scoreFinal,
+			int scoreHomework, int scoreQuiz, int scorePPT, int scoreReport, int scoreEtc, String serialAttand) {
+		try {
+			insertStudent.setString(1, stuNumber);
+			insertStudent.setString(2, stuName);
+			insertStudent.setInt(3, stuGrade);
+			insertStudent.execute();
+
+			insertCourse.setString(1, stuNumber);
+			insertCourse.setInt(2, scoreAttand);
+			insertCourse.setInt(3, scoreMid);
+			insertCourse.setInt(4, scoreFinal);
+			insertCourse.setInt(5, scoreHomework);
+			insertCourse.setInt(6, scoreQuiz);
+			insertCourse.setInt(7, scorePPT);
+			insertCourse.setInt(8, scoreReport);
+			insertCourse.setInt(9, scoreEtc);
+			insertCourse.execute();
+			
+			insertAttand.setString(1, stuNumber);
+			for(int i = 0; i < 32; i++) {
+				insertAttand.setInt(i+2, serialAttand.charAt(i) - 48);
+			}
+			insertAttand.execute();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			close();
+		}
+	}
+
+	public void deleteAll() {
+		try {
+			connection.createStatement().execute("SET FOREIGN_KEY_CHECKS = 0;");
+			connection.createStatement().execute("TRUNCATE attands");
+			connection.createStatement().execute("TRUNCATE students");
+			connection.createStatement().execute("TRUNCATE courses");
+			connection.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			close();
 		}
 	}
 

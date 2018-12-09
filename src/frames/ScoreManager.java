@@ -40,15 +40,11 @@ import queries.AttandsQueries;
 import queries.CoursesQueries;
 import queries.SettingQueries;
 
-class CustomTableCellRenderer extends DefaultTableCellRenderer {
-
-}
-
 public class ScoreManager extends JFrame implements ActionListener {
 	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/grademanager?characterEncoding=UTF-8&serverTimezone=UTC";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "pass";
-	
+
 	private csvIO csvManager;
 	private Ratio ratio;
 	private Grade grade;
@@ -181,7 +177,7 @@ public class ScoreManager extends JFrame implements ActionListener {
 		});
 		renewAttandCol();
 		csvManager = new csvIO(courses, attands);
-		
+
 		avgLabel = new JLabel("가나다");
 		add(avgLabel, BorderLayout.SOUTH);
 
@@ -299,10 +295,26 @@ public class ScoreManager extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 		case "불러오기":
-			System.out.println("ㅂㄹㅇㄱ");
+			JOptionPane.showMessageDialog(null, "이 작업을 하면 기존의 자료는 모두 삭제됩니다.", "성적관리", JOptionPane.WARNING_MESSAGE);
+			csvManager.importCSV();
+			this.attands = csvManager.getAttands();
+			this.courses = csvManager.getCourses();
+			coursesModel = new ClassTableModel(courses.toArray(new Course[courses.size()]));
+			attandsModel = new ClassTableModel(attands.toArray(new Attand[attands.size()]));
+			attandsQueries.deleteAll();
+			for (int i = 0; i < courses.size(); i++) {
+				Attand tempAttand = attands.get(i);
+				Course tempCourse = courses.get(i);
+				attandsQueries.insertAll(tempAttand.getName(), tempAttand.getStuNumber(), tempAttand.getStuGrade(),
+						tempCourse.getScoreAttand(), tempCourse.getScoreMid(), tempCourse.getScoreFinal(),
+						tempCourse.getScoreHomework(), tempCourse.getScoreQuiz(), tempCourse.getScorePPT(),
+						tempCourse.getScoreReport(), tempCourse.getScoreEtc(), tempAttand.getSerialAttand());
+			}
+			mtp.scoreTable.setModel(coursesModel);
+			mtp.setTableApper();
 			break;
 		case "내보내기":
-			csvManager.out();
+			csvManager.exportCSV();
 			break;
 		case "종료":
 			if (JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "성적관리자",
@@ -328,14 +340,15 @@ public class ScoreManager extends JFrame implements ActionListener {
 			break;
 		case "검색":
 			String keyword = JOptionPane.showInputDialog("검색할 학번을 입력하세요", "검색");
-			for (int i = 0; i < courses.size(); i++) {
-				if (courses.get(i).getStuNumber().equals(keyword)) {
-					mtp.scoreTable.changeSelection(mtp.getSorter().convertRowIndexToView(i), 0, false, false);
-					break;
+			if (keyword != null)
+				for (int i = 0; i < courses.size(); i++) {
+					if (courses.get(i).getStuNumber().equals(keyword)) {
+						mtp.scoreTable.changeSelection(mtp.getSorter().convertRowIndexToView(i), 0, false, false);
+						break;
+					}
+					if (i == courses.size() - 1)
+						JOptionPane.showMessageDialog(null, "해당 학생을 찾을 수 없습니다,", "성적관리", JOptionPane.ERROR_MESSAGE);
 				}
-				if (i == courses.size() - 1)
-					JOptionPane.showMessageDialog(null, "해당 학생을 찾을 수 없습니다,", "성적관리", JOptionPane.ERROR_MESSAGE);
-			}
 			break;
 		case "설정":
 			JDialog sm = new SettingManager(ratio, grade, ratioQueries);

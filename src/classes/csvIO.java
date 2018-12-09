@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -22,7 +24,51 @@ public class csvIO {
 		this.courses = courses;
 	}
 
-	public void out() {
+	public void importCSV() {
+		List<Attand> attands = new ArrayList<>();
+		List<Course> courses = new ArrayList<>();
+		
+		BufferedReader br;
+		JFileChooser jfc = new JFileChooser();
+		jfc.setDialogTitle("파일 불러오기");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV 파일", "csv");
+
+		jfc.setFileFilter(filter);
+		if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			try {
+				File f = jfc.getSelectedFile();
+				br = Files.newBufferedReader(Paths.get(f.getAbsolutePath()), Charset.forName("UTF-8"));
+				String line;
+				String parts[];
+				while((line = br.readLine()) != null) {
+					System.out.println(line);
+					parts = line.split(",");
+					courses.add(new Course(parts[1], parts[0], Integer.parseInt(parts[2]),
+							Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]),
+							Integer.parseInt(parts[6]), Integer.parseInt(parts[7]), 
+							Integer.parseInt(parts[8]), Integer.parseInt(parts[9]), Integer.parseInt(parts[10])));
+					StringBuilder sb = new StringBuilder();
+					for(int i = 11; i <43; i++) 
+						sb.append(parts[i]);
+					attands.add(new Attand(parts[1], parts[0], Integer.parseInt(parts[2]), sb.toString()));
+				}
+				this.attands = attands;
+				this.courses = courses;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public List<Attand> getAttands() {
+		return attands;
+	}
+
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+	public void exportCSV() {
 		BufferedWriter bw = null;
 		try {
 			JFileChooser jfc = new JFileChooser();
@@ -35,7 +81,6 @@ public class csvIO {
 				File f = jfc.getSelectedFile();
 
 				bw = Files.newBufferedWriter(Paths.get(f.getAbsolutePath() + ".csv"), Charset.forName(("UTF-8")));
-				List<List<String>> data;
 				String temp;
 				for (int i = 0; i < courses.size(); i++) {
 					bw.write(courses.get(i).getStuNumber());

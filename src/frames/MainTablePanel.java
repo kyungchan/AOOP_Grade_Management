@@ -45,12 +45,7 @@ public class MainTablePanel extends JPanel {
 		getFixCellCenter.setHorizontalAlignment(JLabel.CENTER);
 		getFixCellCenter.setBackground(Color.decode("#F2F2F2"));
 
-		scoreTable.getColumn(columnNames[0]).setPreferredWidth(70);
-		scoreTable.getColumn(columnNames[0]).setCellRenderer(getFixCellCenter);
-		scoreTable.getColumn(columnNames[1]).setPreferredWidth(60);
-		scoreTable.getColumn(columnNames[1]).setCellRenderer(getFixCellCenter);
-		scoreTable.getColumn(columnNames[2]).setPreferredWidth(30);
-		scoreTable.getColumn(columnNames[2]).setCellRenderer(getFixCellCenter);
+		setTableApper();
 		scoreTable.setCellSelectionEnabled(true);
 		sorter = new TableRowSorter(tableModel);
 		scoreTable.setRowSorter(sorter);
@@ -108,6 +103,15 @@ public class MainTablePanel extends JPanel {
 
 	public ClassTableModel getTableModel() {
 		return tableModel;
+	}
+	
+	public void setTableApper() {
+		scoreTable.getColumn(columnNames[0]).setPreferredWidth(70);
+		scoreTable.getColumn(columnNames[0]).setCellRenderer(getFixCellCenter);
+		scoreTable.getColumn(columnNames[1]).setPreferredWidth(60);
+		scoreTable.getColumn(columnNames[1]).setCellRenderer(getFixCellCenter);
+		scoreTable.getColumn(columnNames[2]).setPreferredWidth(30);
+		scoreTable.getColumn(columnNames[2]).setCellRenderer(getFixCellCenter);
 	}
 
 }
